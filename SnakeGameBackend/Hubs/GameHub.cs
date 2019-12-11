@@ -12,10 +12,6 @@ namespace SnakeGameBackend.Hubs
 
         public GameHub()
         {
-            var timer = new Timer(
-                callback: new TimerCallback(SendMessage)
-                
-            );
         }
         
         public async Task SendMessage()
