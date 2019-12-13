@@ -29,7 +29,7 @@ namespace SnakeGameBackend
         {
             services.AddSingleton(new GameStateService());
 
-            services.AddHostedService<HelloWorldHostedService>();
+            services.AddHostedService<GameHostedService>();
 
             services.AddCors();
 

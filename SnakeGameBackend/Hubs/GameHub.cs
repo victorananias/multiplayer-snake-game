@@ -22,7 +22,6 @@ namespace SnakeGameBackend.Hubs
             _gameStateService.AddSnake(Context.ConnectionId);
 
             await Clients.All.SendAsync("ReceiveMessage", _gameStateService.State);
-            //await Clients.Client(this.Context.ConnectionId).SendAsync("Ok", Clients.All);
         }
 
         public async override Task OnDisconnectedAsync(Exception exception)
