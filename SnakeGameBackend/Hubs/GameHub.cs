@@ -4,29 +4,30 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
+using SnakeGameBackend.Services;
 
 namespace SnakeGameBackend.Hubs
 {
     public class GameHub : Hub
     {
+        private GameStateService _gameStateService;
 
-        public GameHub()
+        public GameHub(GameStateService gameStateService)
         {
-        }
-        
-        public async Task SendMessage()
-        {
-            await Clients.All.SendAsync("ReceiveMessage", "ahhhhhhhhhhhhhhhh");
+            _gameStateService = gameStateService;
         }
 
-        public async Task Move(string key)
+        public async override Task OnConnectedAsync()
         {
-            var cultureInfo = Thread.CurrentThread.CurrentCulture;
-            var textInfo = cultureInfo.TextInfo;
+            _gameStateService.AddSnake(Context.ConnectionId);
 
-
-            await Clients.All.SendAsync("MoveTo", "move"+textInfo.ToTitleCase(key));
+            await Clients.All.SendAsync("ReceiveMessage", _gameStateService.State);
+            //await Clients.Client(this.Context.ConnectionId).SendAsync("Ok", Clients.All);
         }
-        
+
+        public async override Task OnDisconnectedAsync(Exception exception)
+        {
+            _gameStateService.RemoveSnake(Context.ConnectionId);
+        }
     }
 }

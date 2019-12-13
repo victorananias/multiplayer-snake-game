@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SnakeGameBackend.Hubs;
+using SnakeGameBackend.Services;
 
 namespace SnakeGameBackend
 {
@@ -26,7 +27,12 @@ namespace SnakeGameBackend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton(new GameStateService());
+
+            services.AddHostedService<HelloWorldHostedService>();
+
             services.AddCors();
+
             services.AddSignalR();
         }
 
