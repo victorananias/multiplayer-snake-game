@@ -12,6 +12,7 @@ namespace SnakeGameBackend.Entities
             Pieces = new List<SnakePiece>();
             LastUpdate = DateTime.Now;
             ShouldGrow = false;
+            Direction = "";
         }
 
         public string Id { get; set; }
@@ -19,5 +20,27 @@ namespace SnakeGameBackend.Entities
         public List<SnakePiece> Pieces { get; set; }
         public bool ShouldGrow { get; set; }
         public DateTime LastUpdate { get; set; }
+        public string Direction { get; set; }
+
+        internal void Update()
+        {
+            switch (Direction)
+            {
+                case "up":
+                    Head.Y -= Head.Size;
+                    break;
+                case "right":
+                    Head.X += Head.Size;
+                    break;
+
+                case "down":
+                    Head.Y += Head.Size;
+                    break;
+
+                case "left":
+                    Head.X -= Head.Size;
+                    break;
+            }
+        }
     }
 }

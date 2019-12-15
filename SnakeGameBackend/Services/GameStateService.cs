@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using SnakeGameBackend.Entities;
 
 namespace SnakeGameBackend.Services
@@ -12,18 +14,26 @@ namespace SnakeGameBackend.Services
             State = new GameState
             {
                 Snakes = new List<Snake>(),
-                Fruit = new Fruit() { X = 200, Y = 200 }
+                Fruits = new List<Fruit>
+                {
+                    new Fruit { X = 200, Y = 200 }
+                } 
             };
         }
 
         public void AddSnake(string id)
         {
-            this.State.Snakes.Add(new Snake(id, 300, 300));
+            State.Snakes.Add(new Snake(id, 100, 100));
+        }
+
+        internal void MoveSnake(string connectionId, string direction)
+        {
+            State.Snakes.First(s => s.Id == connectionId).Direction = direction;
         }
 
         public void RemoveSnake(string id)
         {
-            this.State.Snakes.Remove(this.State.Snakes.Find(s => s.Id == id));
+            State.Snakes.Remove(this.State.Snakes.Find(s => s.Id == id));
         }
     }
 }

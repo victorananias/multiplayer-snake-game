@@ -25,16 +25,14 @@ namespace SnakeGameBackend.Services
         {
             var clients = _hubContext.Clients;
 
-            if (this._gameStateService.State.Snakes.Count > 0)
-            {
-                this._gameStateService.State.Snakes[0].Head.X += 20;
-            }
-
             while (!stoppingToken.IsCancellationRequested)
             {
-                await clients.All.SendAsync("UpdateGameState", this._gameStateService.State);
 
-                await Task.Delay(1000);
+                _gameStateService.State.Snakes.ForEach(snake => snake.Update());
+
+                await clients.All.SendAsync("UpdateGameState", _gameStateService.State);
+
+                await Task.Delay(100, stoppingToken);
             }
         }
     }
