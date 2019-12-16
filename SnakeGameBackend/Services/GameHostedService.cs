@@ -27,7 +27,6 @@ namespace SnakeGameBackend.Services
 
             while (!stoppingToken.IsCancellationRequested)
             {
-
                 _gameStateService.State.Snakes.ForEach(snake => snake.Update());
 
                 await clients.All.SendAsync("UpdateGameState", _gameStateService.State);
