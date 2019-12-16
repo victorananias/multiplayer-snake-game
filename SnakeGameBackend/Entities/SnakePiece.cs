@@ -1,3 +1,5 @@
+using System;
+
 namespace SnakeGameBackend.Entities
 {
     public class SnakePiece
@@ -12,5 +14,23 @@ namespace SnakeGameBackend.Entities
         public int X { get; set; }
         public int Y { get; set; }
         public int Size { get; set; }
+        public Hitbox Hitbox { 
+            get 
+            {
+                return new Hitbox
+                {
+                    X = this.X,
+                    Y = this.Y,
+                    Width = 20,
+                    Height = 20
+                };
+            }
+        }
+
+        internal void Move(int x, int y)
+        {
+            X = x;
+            Y = y;
+        }
     }
 }

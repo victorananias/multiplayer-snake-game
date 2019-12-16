@@ -23,7 +23,9 @@ namespace SnakeGameBackend.Services
 
         public void AddSnake(string id)
         {
-            State.Snakes.Add(new Snake(id, 100, 100));
+            var snake = new Snake(id, 0, 100);
+
+            State.Snakes.Add(snake);
         }
 
         internal void MoveSnake(string connectionId, string direction)
@@ -33,7 +35,7 @@ namespace SnakeGameBackend.Services
 
         public void RemoveSnake(string id)
         {
-            State.Snakes.Remove(this.State.Snakes.Find(s => s.Id == id));
+            State.Snakes.Remove(State.Snakes.Find(s => s.Id == id));
         }
     }
 }

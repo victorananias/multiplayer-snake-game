@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SnakeGameBackend.Entities
 {
-    public class Snake
+    public class Snake: ICollidable
     {
         public Snake(string id, int x, int y)
         {
@@ -21,43 +22,79 @@ namespace SnakeGameBackend.Entities
         public bool ShouldGrow { get; set; }
         public DateTime LastUpdate { get; set; }
         public string Direction { get; set; }
+        public List<Hitbox> Hitboxes
+        {
+            get
+            {
+                var hitboxes = Body.Select(p => p.Hitbox).ToList();
+                hitboxes.Insert(0, Head.Hitbox);
+                return hitboxes;
+            }
+        }
 
         internal void Update()
         {
+            var y = Head.Y;
+            var x = Head.X;
+
             switch (Direction)
             {
                 case "up":
-                    Head.Y -= Head.Size;
-                    if (Head.Y < 0)
+                    y -= Head.Size;
+                    if (y < 0)
                     {
-                        Head.Y = 500;
+                        y = 500;
                     }
 
                     break;
                 case "right":
-                    Head.X += Head.Size;
-                    if (Head.X > 500)
+                    x += Head.Size;
+                    if (x > 500)
                     {
-                        Head.X = 0;
+                        x = 0;
                     }
                     break;
 
                 case "down":
-                    Head.Y += Head.Size;
-                    if (Head.Y > 500)
+                    y += Head.Size;
+                    if (y > 500)
                     {
-                        Head.Y = 0;
+                        y = 0;
                     }
                     break;
 
                 case "left":
-                    Head.X -= Head.Size;
-                    if (Head.X < 0)
+                    x -= Head.Size;
+                    if (x < 0)
                     {
-                        Head.X = 500;
+                        x = 500;
                     }
                     break;
             }
+
+            var body = Body;
+            body.Insert(0, Head);
+
+            for (var i = 0; i < Body.Count; i++)
+            {
+                var piece = body[i];
+
+                var oldX = piece.X;
+                var oldY = piece.Y;
+
+                piece.Move(x, y);
+
+                x = oldX;
+                y = oldY;
+            }
+
+            //if (this.shouldGrow)
+            //{
+            //    this.grow(x, y)
+            //    this.shouldGrow = false
+            //}
+
+
         }
     }
 }
