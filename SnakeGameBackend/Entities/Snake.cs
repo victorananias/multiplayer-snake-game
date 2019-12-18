@@ -26,9 +26,10 @@ namespace SnakeGameBackend.Entities
         {
             get
             {
-                var hitboxes = Body.Select(p => p.Hitbox).ToList();
-                hitboxes.Insert(0, Head.Hitbox);
-                return hitboxes;
+                //var hitboxes = Body.Select(p => p.Hitbox).ToList();
+                //hitboxes.Insert(0, Head.Hitbox);
+                return new List<Hitbox>() { Head.Hitbox };
+                //return hitboxes == null ? new List<Hitbox>() : hitboxes;
             }
         }
 

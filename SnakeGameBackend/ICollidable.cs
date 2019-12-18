@@ -8,6 +8,6 @@ namespace SnakeGameBackend
 {
     public class ICollidable
     {
-        public List<Hitbox> Hitboxes { get; set; }
+        public List<Hitbox> Hitboxes { get; }
     }
 }
