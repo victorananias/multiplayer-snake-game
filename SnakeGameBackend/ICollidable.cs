@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace SnakeGameBackend
 {
-    public class ICollidable
+    public interface ICollidable
     {
-        public List<Hitbox> Hitboxes { get; }
+        List<Hitbox> Hitboxes { get; }
     }
 }

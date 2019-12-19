@@ -27,7 +27,7 @@ namespace SnakeGameBackend.Services
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                Console.WriteLine("Updating");
+                //Console.WriteLine("Updating");
                 _gameStateService.State.Snakes.ForEach(snake => snake.Update());
 
                 var collidables = new List<ICollidable>();
@@ -42,23 +42,26 @@ namespace SnakeGameBackend.Services
 
                 collidables.ForEach(collidable1 =>
                 {
-                    foreach (var collidable2 in collidables)
+                    collidables.ForEach(collidable2 =>
                     {
                         if (collidable1 == collidable2)
                         {
-                            continue;
-                        }
-                        
-                        if (collidable1.Hitboxes == null)
-                        {
-                            continue;
+                            Console.WriteLine("collidables are the same");
+                            return;
                         }
 
-                        foreach (var hitbox in collidable1.Hitboxes)
+                        var collided = false;
+
+                        foreach (var hitbox1 in from hitbox1 in collidable1.Hitboxes from hitbox2 in collidable2.Hitboxes where (
+                            hitbox1.X >= hitbox2.X 
+                            && hitbox1.X + hitbox1.Width <= hitbox2.X + hitbox2.Width
+                            && hitbox1.Y >= hitbox2.Y
+                            && hitbox1.Y + hitbox1.Height <= hitbox2.Y + hitbox1.Height
+                        ) select hitbox1)
                         {
-                            Console.WriteLine("Checking collision");
+                            Console.WriteLine("collided");
                         }
-                    }
+                    });
                 });
 
                 await clients.All.SendAsync("UpdateGameState", _gameStateService.State);
