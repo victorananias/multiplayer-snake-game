@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace SnakeGameBackend.Entities
@@ -7,7 +8,9 @@ namespace SnakeGameBackend.Entities
         public Fruit()
         {
             Size = 20;
+            Id = Guid.NewGuid().ToString();
         }
+
         public string Id { get; set; }
         public int X { get; set; }
         public int Y { get; set; }

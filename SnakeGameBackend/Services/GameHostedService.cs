@@ -27,6 +27,7 @@ namespace SnakeGameBackend.Services
 
             while (!stoppingToken.IsCancellationRequested)
             {
+                var colliadablesChecked = new Dictionary<string, List<string>>();
                 //Console.WriteLine("Updating");
                 _gameStateService.State.Snakes.ForEach(snake => snake.Update());
 
@@ -44,9 +45,28 @@ namespace SnakeGameBackend.Services
                 {
                     collidables.ForEach(collidable2 =>
                     {
-                        if (collidable1 == collidable2)
+
+                        if (collidable1.Id == collidable2.Id)
                         {
-                            Console.WriteLine("collidables are the same");
+                            //Console.WriteLine("collidables are the same");
+                            return;
+                        }
+
+                        if (!colliadablesChecked.ContainsKey(collidable1.Id))
+                        {
+                            colliadablesChecked[collidable1.Id] = new List<string>();
+                        }
+
+                        if (!colliadablesChecked.ContainsKey(collidable2.Id))
+                        {
+                            colliadablesChecked[collidable2.Id] = new List<string>();
+                        }
+
+                        if (
+                            colliadablesChecked[collidable1.Id].Contains(collidable2.Id)
+                            || colliadablesChecked[collidable2.Id].Contains(collidable1.Id)
+                        )
+                        {
                             return;
                         }
 
@@ -61,6 +81,9 @@ namespace SnakeGameBackend.Services
                         {
                             Console.WriteLine("collided");
                         }
+
+                        colliadablesChecked[collidable1.Id].Add(collidable2.Id);
+                        colliadablesChecked[collidable2.Id].Add(collidable1.Id);
                     });
                 });
 

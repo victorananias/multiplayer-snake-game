@@ -9,5 +9,6 @@ namespace SnakeGameBackend
     public interface ICollidable
     {
         List<Hitbox> Hitboxes { get; }
+        string Id { get; set; }
     }
 }
