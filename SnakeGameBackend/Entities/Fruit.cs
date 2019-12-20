@@ -15,21 +15,16 @@ namespace SnakeGameBackend.Entities
         public int X { get; set; }
         public int Y { get; set; }
         public int Size { get; set; }
-        public List<Hitbox> Hitboxes
-        {
-            get
+        public List<Hitbox> Hitboxes =>
+            new List<Hitbox>()
             {
-                return new List<Hitbox>()
+                new Hitbox
                 {
-                    new Hitbox
-                    {
-                        X = this.X,
-                        Y = this.Y,
-                        Width = 20,
-                        Height = 20
-                    }
-                };
-            }
-        }
+                    X = this.X,
+                    Y = this.Y,
+                    Width = 20,
+                    Height = 20
+                }
+            };
     }
 }

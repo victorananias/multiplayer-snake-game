@@ -23,23 +23,18 @@ namespace SnakeGameBackend.Services
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            Console.WriteLine("started");
             var clients = _hubContext.Clients;
 
             while (!stoppingToken.IsCancellationRequested)
             {
                 var colliadablesChecked = new Dictionary<string, List<string>>();
-                //Console.WriteLine("Updating");
                 _gameStateService.State.Snakes.ForEach(snake => snake.Update());
 
                 var collidables = new List<ICollidable>();
 
-                _gameStateService.State.Snakes.ForEach(snake => {
-                    collidables.Add(snake);
-                });
-
-                _gameStateService.State.Fruits.ForEach(fruit => {
-                    collidables.Add(fruit);
-                });
+                _gameStateService.State.Snakes.ForEach(snake => collidables.Add(snake));
+                _gameStateService.State.Fruits.ForEach(fruit => collidables.Add(fruit));
 
                 collidables.ForEach(collidable1 =>
                 {
@@ -48,7 +43,6 @@ namespace SnakeGameBackend.Services
 
                         if (collidable1.Id == collidable2.Id)
                         {
-                            //Console.WriteLine("collidables are the same");
                             return;
                         }
 
@@ -70,26 +64,29 @@ namespace SnakeGameBackend.Services
                             return;
                         }
 
-                        var collided = false;
-
-                        foreach (var hitbox1 in from hitbox1 in collidable1.Hitboxes from hitbox2 in collidable2.Hitboxes where (
-                            hitbox1.X >= hitbox2.X 
+                        var collided = from hitbox1 in collidable1.Hitboxes
+                        from hitbox2 in collidable2.Hitboxes
+                        where (
+                            hitbox1.X >= hitbox2.X
                             && hitbox1.X + hitbox1.Width <= hitbox2.X + hitbox2.Width
                             && hitbox1.Y >= hitbox2.Y
                             && hitbox1.Y + hitbox1.Height <= hitbox2.Y + hitbox1.Height
-                        ) select hitbox1)
+                        )
+                        select hitbox1;
+
+                        if (collided.Any())
                         {
                             Console.WriteLine("collided");
-                        }
+                        } 
 
                         colliadablesChecked[collidable1.Id].Add(collidable2.Id);
                         colliadablesChecked[collidable2.Id].Add(collidable1.Id);
                     });
                 });
 
-                await clients.All.SendAsync("UpdateGameState", _gameStateService.State);
+                await clients.All.SendAsync("UpdateGameState", _gameStateService.State, cancellationToken: stoppingToken);
 
-                await Task.Delay(100, stoppingToken);
+                await Task.Delay(500, stoppingToken);
             }
         }
     }

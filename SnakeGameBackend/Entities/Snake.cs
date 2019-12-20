@@ -22,16 +22,7 @@ namespace SnakeGameBackend.Entities
         public bool ShouldGrow { get; set; }
         public DateTime LastUpdate { get; set; }
         public string Direction { get; set; }
-        public List<Hitbox> Hitboxes
-        {
-            get
-            {
-                //var hitboxes = Body.Select(p => p.Hitbox).ToList();
-                //hitboxes.Insert(0, Head.Hitbox);
-                return new List<Hitbox>() { Head.Hitbox };
-                //return hitboxes == null ? new List<Hitbox>() : hitboxes;
-            }
-        }
+        public List<Hitbox> Hitboxes => new List<Hitbox>() { Head.Hitbox };
 
         internal void Update()
         {
