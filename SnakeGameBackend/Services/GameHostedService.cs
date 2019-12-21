@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SnakeGameBackend.Entities;
 
 namespace SnakeGameBackend.Services
 {
@@ -25,6 +26,7 @@ namespace SnakeGameBackend.Services
         {
             Console.WriteLine("started");
             var clients = _hubContext.Clients;
+            var counter = 0;
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -32,18 +34,22 @@ namespace SnakeGameBackend.Services
                 _gameStateService.State.Snakes.ForEach(snake => snake.Update());
 
                 var collidables = new List<ICollidable>();
+                
+                if (_gameStateService.State.Snakes.Count() > 0)
+                {
 
                 _gameStateService.State.Snakes.ForEach(snake => collidables.Add(snake));
                 _gameStateService.State.Fruits.ForEach(fruit => collidables.Add(fruit));
 
-                collidables.ForEach(collidable1 =>
+                foreach (var collidable1 in collidables)
                 {
-                    collidables.ForEach(collidable2 =>
+                    foreach (var collidable2 in collidables)
                     {
+                        //Console.WriteLine(counter);
 
                         if (collidable1.Id == collidable2.Id)
                         {
-                            return;
+                            continue;
                         }
 
                         if (!colliadablesChecked.ContainsKey(collidable1.Id))
@@ -61,7 +67,7 @@ namespace SnakeGameBackend.Services
                             || colliadablesChecked[collidable2.Id].Contains(collidable1.Id)
                         )
                         {
-                            return;
+                            continue;
                         }
 
                         var collided = from hitbox1 in collidable1.Hitboxes
@@ -76,17 +82,36 @@ namespace SnakeGameBackend.Services
 
                         if (collided.Any())
                         {
-                            Console.WriteLine("collided");
+                            if (collidable1.GetType() == typeof(Snake))
+                            {
+                                ((Snake) collidable1).Grow();
+                            }
+                            else
+                            {
+                                _gameStateService.RemoveFruit(collidable1.Id);
+                            }
+
+                            if (collidable2.GetType() == typeof(Snake))
+                            {
+                                ((Snake)collidable2).Grow();
+                            }
+                            else
+                            {
+                                _gameStateService.RemoveFruit(collidable1.Id);
+                            }
                         } 
 
                         colliadablesChecked[collidable1.Id].Add(collidable2.Id);
                         colliadablesChecked[collidable2.Id].Add(collidable1.Id);
-                    });
-                });
+                        counter++;
+                    }
+                }
+
+                }
 
                 await clients.All.SendAsync("UpdateGameState", _gameStateService.State, cancellationToken: stoppingToken);
 
-                await Task.Delay(500, stoppingToken);
+                await Task.Delay(100, stoppingToken);
             }
         }
     }

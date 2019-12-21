@@ -23,7 +23,7 @@ namespace SnakeGameBackend.Services
 
         public void AddSnake(string id)
         {
-            var snake = new Snake(id, 0, 100);
+            var snake = new Snake(id, 200, 100);
 
             State.Snakes.Add(snake);
         }
@@ -36,6 +36,11 @@ namespace SnakeGameBackend.Services
         public void RemoveSnake(string id)
         {
             State.Snakes.Remove(State.Snakes.Find(s => s.Id == id));
+        }
+
+        public void RemoveFruit(string id)
+        {
+            State.Fruits.Remove(State.Fruits.Find(s => s.Id == id));
         }
     }
 }

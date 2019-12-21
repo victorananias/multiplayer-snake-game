@@ -88,5 +88,10 @@ namespace SnakeGameBackend.Entities
 
 
         }
+
+        internal void Grow()
+        {
+            Body.Add(new SnakePiece(-200,-200));
+        }
     }
 }
