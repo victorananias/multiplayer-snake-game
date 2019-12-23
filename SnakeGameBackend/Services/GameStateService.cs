@@ -14,10 +14,7 @@ namespace SnakeGameBackend.Services
             State = new GameState
             {
                 Snakes = new List<Snake>(),
-                Fruits = new List<Fruit>
-                {
-                    new Fruit { X = 200, Y = 200 }
-                } 
+                Fruits = new List<Fruit>()
             };
         }
 
@@ -26,6 +23,15 @@ namespace SnakeGameBackend.Services
             var snake = new Snake(id, 200, 100);
 
             State.Snakes.Add(snake);
+        }
+
+        public void GenerateFruit()
+        {
+            var random = new Random();
+            var x = (int) (random.Next(500 - 20) / 20) * 20;
+            var y = (int) (random.Next(500 - 20) / 20) * 20;
+
+            State.Fruits.Add(new Fruit(x, y));
         }
 
         internal void MoveSnake(string connectionId, string direction)

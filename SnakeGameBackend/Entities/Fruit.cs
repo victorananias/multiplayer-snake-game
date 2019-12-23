@@ -11,6 +11,14 @@ namespace SnakeGameBackend.Entities
             Id = Guid.NewGuid().ToString();
         }
 
+        public Fruit(int x, int y)
+        {
+            Size = 20;
+            Id = Guid.NewGuid().ToString();
+            X = x;
+            Y = y;
+        }
+
         public string Id { get; set; }
         public int X { get; set; }
         public int Y { get; set; }

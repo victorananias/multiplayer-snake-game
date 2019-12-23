@@ -25,6 +25,7 @@ namespace SnakeGameBackend.Hubs
         public async override Task OnConnectedAsync()
         {
             _gameStateService.AddSnake(Context.ConnectionId);
+            _gameStateService.GenerateFruit();
 
             await Clients.All.SendAsync("ReceiveMessage", _gameStateService.State);
         }

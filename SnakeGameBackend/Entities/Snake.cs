@@ -62,17 +62,26 @@ namespace SnakeGameBackend.Entities
                         x = 500;
                     }
                     break;
+                default:
+                    return;
             }
 
-            var body = Body;
-            body.Insert(0, Head);
+            var piece = Head;
+
+            var oldX = piece.X;
+            var oldY = piece.Y;
+
+            piece.Move(x, y);
+
+            x = oldX;
+            y = oldY;
 
             for (var i = 0; i < Body.Count; i++)
             {
-                var piece = body[i];
+                piece = Body[i];
 
-                var oldX = piece.X;
-                var oldY = piece.Y;
+                oldX = piece.X;
+                oldY = piece.Y;
 
                 piece.Move(x, y);
 

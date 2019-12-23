@@ -10,5 +10,7 @@ namespace SnakeGameBackend
     {
         List<Hitbox> Hitboxes { get; }
         string Id { get; set; }
+
+        void CollidedTo(ICollidable collidable2);
     }
 }

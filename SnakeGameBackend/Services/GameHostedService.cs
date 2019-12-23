@@ -24,9 +24,7 @@ namespace SnakeGameBackend.Services
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            Console.WriteLine("started");
             var clients = _hubContext.Clients;
-            var counter = 0;
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -34,79 +32,76 @@ namespace SnakeGameBackend.Services
                 _gameStateService.State.Snakes.ForEach(snake => snake.Update());
 
                 var collidables = new List<ICollidable>();
-                
-                if (_gameStateService.State.Snakes.Count() > 0)
+
+                if (_gameStateService.State.Snakes.Any())
                 {
 
-                _gameStateService.State.Snakes.ForEach(snake => collidables.Add(snake));
-                _gameStateService.State.Fruits.ForEach(fruit => collidables.Add(fruit));
+                    _gameStateService.State.Snakes.ForEach(snake => collidables.Add(snake));
+                    _gameStateService.State.Fruits.ForEach(fruit => collidables.Add(fruit));
 
-                foreach (var collidable1 in collidables)
-                {
-                    foreach (var collidable2 in collidables)
+                    foreach (var collidable1 in collidables)
                     {
-                        //Console.WriteLine(counter);
-
-                        if (collidable1.Id == collidable2.Id)
+                        foreach (var collidable2 in collidables)
                         {
-                            continue;
-                        }
-
-                        if (!colliadablesChecked.ContainsKey(collidable1.Id))
-                        {
-                            colliadablesChecked[collidable1.Id] = new List<string>();
-                        }
-
-                        if (!colliadablesChecked.ContainsKey(collidable2.Id))
-                        {
-                            colliadablesChecked[collidable2.Id] = new List<string>();
-                        }
-
-                        if (
-                            colliadablesChecked[collidable1.Id].Contains(collidable2.Id)
-                            || colliadablesChecked[collidable2.Id].Contains(collidable1.Id)
-                        )
-                        {
-                            continue;
-                        }
-
-                        var collided = from hitbox1 in collidable1.Hitboxes
-                        from hitbox2 in collidable2.Hitboxes
-                        where (
-                            hitbox1.X >= hitbox2.X
-                            && hitbox1.X + hitbox1.Width <= hitbox2.X + hitbox2.Width
-                            && hitbox1.Y >= hitbox2.Y
-                            && hitbox1.Y + hitbox1.Height <= hitbox2.Y + hitbox1.Height
-                        )
-                        select hitbox1;
-
-                        if (collided.Any())
-                        {
-                            if (collidable1.GetType() == typeof(Snake))
+                            if (collidable1.Id == collidable2.Id)
                             {
-                                ((Snake) collidable1).Grow();
-                            }
-                            else
-                            {
-                                _gameStateService.RemoveFruit(collidable1.Id);
+                                continue;
                             }
 
-                            if (collidable2.GetType() == typeof(Snake))
+                            if (!colliadablesChecked.ContainsKey(collidable1.Id))
                             {
-                                ((Snake)collidable2).Grow();
+                                colliadablesChecked[collidable1.Id] = new List<string>();
                             }
-                            else
-                            {
-                                _gameStateService.RemoveFruit(collidable1.Id);
-                            }
-                        } 
 
-                        colliadablesChecked[collidable1.Id].Add(collidable2.Id);
-                        colliadablesChecked[collidable2.Id].Add(collidable1.Id);
-                        counter++;
+                            if (!colliadablesChecked.ContainsKey(collidable2.Id))
+                            {
+                                colliadablesChecked[collidable2.Id] = new List<string>();
+                            }
+
+                            if (
+                                colliadablesChecked[collidable1.Id].Contains(collidable2.Id)
+                                || colliadablesChecked[collidable2.Id].Contains(collidable1.Id)
+                            )
+                            {
+                                continue;
+                            }
+
+                            var collided = from hitbox1 in collidable1.Hitboxes
+                                           from hitbox2 in collidable2.Hitboxes
+                                           where (
+                                               hitbox1.X >= hitbox2.X
+                                               && hitbox1.X + hitbox1.Width <= hitbox2.X + hitbox2.Width
+                                               && hitbox1.Y >= hitbox2.Y
+                                               && hitbox1.Y + hitbox1.Height <= hitbox2.Y + hitbox1.Height
+                                           )
+                                           select hitbox1;
+
+                            if (collided.Any())
+                            {
+                                collidable1.CollidedTo(collidable2);
+                                collidable1.CollidedTo(collidable1);
+
+                                if (collidable1.GetType() == typeof(Snake))
+                                {
+                                    ((Snake)collidable1).Grow();
+
+                                    _gameStateService.RemoveFruit(collidable2.Id);
+                                    _gameStateService.GenerateFruit();
+                                }
+
+                                if (collidable2.GetType() == typeof(Snake))
+                                {
+                                    ((Snake)collidable2).Grow();
+
+                                    _gameStateService.RemoveFruit(collidable1.Id);
+                                    _gameStateService.GenerateFruit();
+                                }
+                            }
+
+                            colliadablesChecked[collidable1.Id].Add(collidable2.Id);
+                            colliadablesChecked[collidable2.Id].Add(collidable1.Id);
+                        }
                     }
-                }
-
                 }
 
                 await clients.All.SendAsync("UpdateGameState", _gameStateService.State, cancellationToken: stoppingToken);
