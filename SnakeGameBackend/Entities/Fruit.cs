@@ -20,6 +20,10 @@ namespace SnakeGameBackend.Entities
         }
 
         public string Id { get; set; }
+        public void CollidedTo(ICollidable collidable2)
+        {
+        }
+
         public int X { get; set; }
         public int Y { get; set; }
         public int Size { get; set; }
