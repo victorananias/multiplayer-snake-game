@@ -48,5 +48,16 @@ namespace SnakeGameBackend.Services
         {
             State.Fruits.Remove(State.Fruits.Find(s => s.Id == id));
         }
+
+        public void Collide(ICollidable collidable1, ICollidable collidable2)
+        {
+            collidable1.CollidedTo(collidable2);
+            collidable1.CollidedTo(collidable1);
+
+            var fruit = collidable1.GetType() == typeof(Snake) ? collidable2 : collidable1;
+
+            RemoveFruit(fruit.Id);
+            GenerateFruit();
+        }
     }
 }

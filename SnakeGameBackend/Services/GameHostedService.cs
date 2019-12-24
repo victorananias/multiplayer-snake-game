@@ -35,9 +35,8 @@ namespace SnakeGameBackend.Services
 
                 if (_gameStateService.State.Snakes.Any())
                 {
-
-                    _gameStateService.State.Snakes.ForEach(snake => collidables.Add(snake));
-                    _gameStateService.State.Fruits.ForEach(fruit => collidables.Add(fruit));
+                    collidables.AddRange(_gameStateService.State.Snakes);
+                    collidables.AddRange(_gameStateService.State.Fruits);
 
                     foreach (var collidable1 in collidables)
                     {
@@ -78,24 +77,7 @@ namespace SnakeGameBackend.Services
 
                             if (collided.Any())
                             {
-                                collidable1.CollidedTo(collidable2);
-                                collidable1.CollidedTo(collidable1);
-
-                                if (collidable1.GetType() == typeof(Snake))
-                                {
-                                    ((Snake)collidable1).Grow();
-
-                                    _gameStateService.RemoveFruit(collidable2.Id);
-                                    _gameStateService.GenerateFruit();
-                                }
-
-                                if (collidable2.GetType() == typeof(Snake))
-                                {
-                                    ((Snake)collidable2).Grow();
-
-                                    _gameStateService.RemoveFruit(collidable1.Id);
-                                    _gameStateService.GenerateFruit();
-                                }
+                                _gameStateService.Collide(collidable1, collidable2);
                             }
 
                             colliadablesChecked[collidable1.Id].Add(collidable2.Id);

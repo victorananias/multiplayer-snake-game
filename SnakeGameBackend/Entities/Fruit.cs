@@ -20,7 +20,7 @@ namespace SnakeGameBackend.Entities
         }
 
         public string Id { get; set; }
-        public void CollidedTo(ICollidable collidable2)
+        public void CollidedTo(ICollidable collidable)
         {
         }
 

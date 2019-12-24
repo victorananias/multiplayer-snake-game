@@ -17,8 +17,10 @@ namespace SnakeGameBackend.Entities
         }
 
         public string Id { get; set; }
-        public void CollidedTo(ICollidable collidable2)
+        public void CollidedTo(ICollidable collidable)
         {
+            if (typeof(Fruit) == collidable.GetType())
+            Grow();
         }
 
         public SnakePiece Head { get; set; }
@@ -92,14 +94,6 @@ namespace SnakeGameBackend.Entities
                 x = oldX;
                 y = oldY;
             }
-
-            //if (this.shouldGrow)
-            //{
-            //    this.grow(x, y)
-            //    this.shouldGrow = false
-            //}
-
-
         }
 
         internal void Grow()
