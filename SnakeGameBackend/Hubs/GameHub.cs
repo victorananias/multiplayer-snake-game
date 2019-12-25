@@ -10,29 +10,29 @@ namespace SnakeGameBackend.Hubs
 {
     public class GameHub : Hub
     {
-        private GameStateService _gameStateService;
+        private GameStateService _gameService;
 
-        public GameHub(GameStateService gameStateService)
+        public GameHub(GameStateService gameService)
         {
-            _gameStateService = gameStateService;
+            _gameService = gameService;
         }
 
         public void Move(string direction)
         {
-            _gameStateService.MoveSnake(Context.ConnectionId, direction);
+            _gameService.MoveSnake(Context.ConnectionId, direction);
         }
 
         public async override Task OnConnectedAsync()
         {
-            _gameStateService.AddSnake(Context.ConnectionId);
-            _gameStateService.GenerateFruit();
+            _gameService.AddSnake(Context.ConnectionId);
+            _gameService.GenerateFruit();
 
-            await Clients.All.SendAsync("ReceiveMessage", _gameStateService.State);
+            await Clients.All.SendAsync("ReceiveMessage", _gameService.State);
         }
 
         public async override Task OnDisconnectedAsync(Exception exception)
         {
-            _gameStateService.RemoveSnake(Context.ConnectionId);
+            _gameService.RemoveSnake(Context.ConnectionId);
         }
     }
 }

@@ -20,7 +20,9 @@ namespace SnakeGameBackend.Entities
         public void CollidedTo(ICollidable collidable)
         {
             if (typeof(Fruit) == collidable.GetType())
-            Grow();
+            {
+                Grow();
+            }
         }
 
         public SnakePiece Head { get; set; }
@@ -41,13 +43,13 @@ namespace SnakeGameBackend.Entities
                     y -= Head.Size;
                     if (y < 0)
                     {
-                        y = 500;
+                        y = 500 - 20;
                     }
 
                     break;
                 case "right":
                     x += Head.Size;
-                    if (x > 500)
+                    if (x > 500 - 20)
                     {
                         x = 0;
                     }
@@ -55,7 +57,7 @@ namespace SnakeGameBackend.Entities
 
                 case "down":
                     y += Head.Size;
-                    if (y > 500)
+                    if (y > 500 - 20)
                     {
                         y = 0;
                     }
@@ -65,7 +67,7 @@ namespace SnakeGameBackend.Entities
                     x -= Head.Size;
                     if (x < 0)
                     {
-                        x = 500;
+                        x = 500 - 20;
                     }
                     break;
                 default:

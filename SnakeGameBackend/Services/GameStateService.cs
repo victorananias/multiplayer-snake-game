@@ -7,8 +7,6 @@ namespace SnakeGameBackend.Services
 {
     public class GameStateService
     {
-        public GameState State { get; set; }
-
         public GameStateService()
         {
             State = new GameState
@@ -17,6 +15,8 @@ namespace SnakeGameBackend.Services
                 Fruits = new List<Fruit>()
             };
         }
+
+        public GameState State { get; set; }
 
         public void AddSnake(string id)
         {
@@ -28,8 +28,8 @@ namespace SnakeGameBackend.Services
         public void GenerateFruit()
         {
             var random = new Random();
-            var x = (int) (random.Next(500 - 20) / 20) * 20;
-            var y = (int) (random.Next(500 - 20) / 20) * 20;
+            var x = random.Next(500 - 20) / 20 * 20;
+            var y = random.Next(500 - 20) / 20 * 20;
 
             State.Fruits.Add(new Fruit(x, y));
         }

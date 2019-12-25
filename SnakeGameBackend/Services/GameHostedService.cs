@@ -14,12 +14,15 @@ namespace SnakeGameBackend.Services
     public class GameHostedService : BackgroundService
     {
         private IHubContext<GameHub> _hubContext;
-        private GameStateService _gameStateService;
+        private GameService _game;
 
-        public GameHostedService(IHubContext<GameHub> hubContext, GameStateService gameStateService)
+        public GameHostedService(
+            IHubContext<GameHub> hubContext, 
+            GameService game
+        )
         {
             _hubContext = hubContext;
-            _gameStateService = gameStateService;
+            _game = game;
         }
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -28,67 +31,11 @@ namespace SnakeGameBackend.Services
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                var colliadablesChecked = new Dictionary<string, List<string>>();
-                _gameStateService.State.Snakes.ForEach(snake => snake.Update());
+                _game.Update();
 
-                var collidables = new List<ICollidable>();
+                await clients.All.SendAsync("UpdateView", _game.State, cancellationToken: stoppingToken);
 
-                if (_gameStateService.State.Snakes.Any())
-                {
-                    collidables.AddRange(_gameStateService.State.Snakes);
-                    collidables.AddRange(_gameStateService.State.Fruits);
-
-                    foreach (var collidable1 in collidables)
-                    {
-                        foreach (var collidable2 in collidables)
-                        {
-                            if (collidable1.Id == collidable2.Id)
-                            {
-                                continue;
-                            }
-
-                            if (!colliadablesChecked.ContainsKey(collidable1.Id))
-                            {
-                                colliadablesChecked[collidable1.Id] = new List<string>();
-                            }
-
-                            if (!colliadablesChecked.ContainsKey(collidable2.Id))
-                            {
-                                colliadablesChecked[collidable2.Id] = new List<string>();
-                            }
-
-                            if (
-                                colliadablesChecked[collidable1.Id].Contains(collidable2.Id)
-                                || colliadablesChecked[collidable2.Id].Contains(collidable1.Id)
-                            )
-                            {
-                                continue;
-                            }
-
-                            var collided = from hitbox1 in collidable1.Hitboxes
-                                           from hitbox2 in collidable2.Hitboxes
-                                           where (
-                                               hitbox1.X >= hitbox2.X
-                                               && hitbox1.X + hitbox1.Width <= hitbox2.X + hitbox2.Width
-                                               && hitbox1.Y >= hitbox2.Y
-                                               && hitbox1.Y + hitbox1.Height <= hitbox2.Y + hitbox1.Height
-                                           )
-                                           select hitbox1;
-
-                            if (collided.Any())
-                            {
-                                _gameStateService.Collide(collidable1, collidable2);
-                            }
-
-                            colliadablesChecked[collidable1.Id].Add(collidable2.Id);
-                            colliadablesChecked[collidable2.Id].Add(collidable1.Id);
-                        }
-                    }
-                }
-
-                await clients.All.SendAsync("UpdateGameState", _gameStateService.State, cancellationToken: stoppingToken);
-
-                await Task.Delay(100, stoppingToken);
+                await Task.Delay(200, stoppingToken);
             }
         }
     }
