@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SnakeGameBackend.Entities;
+using SnakeGameBackend.Interfaces;
 
 namespace SnakeGameBackend.Services
 {

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SnakeGameBackend.Entities;
+using SnakeGameBackend.Interfaces;
 
 namespace SnakeGameBackend.Services
 {
@@ -18,6 +19,7 @@ namespace SnakeGameBackend.Services
         {
             _gameState = gameStateService;
             _collisorService = collisorService;
+            _collisorService.OnCollision += OnCollision;
         }
 
         public void Update()
@@ -32,6 +34,14 @@ namespace SnakeGameBackend.Services
             collidables.AddRange(_gameState.State.Fruits);
 
             _collisorService.setCollidables(collidables).Check();
+        }
+
+        public void OnCollision(object collisorService, CollisionEventArgs args)
+        {
+            var fruit = args.Collidable1.GetType() == typeof(Fruit) ? args.Collidable1 : args.Collidable2;  
+            
+            _gameState.RemoveFruit(fruit.Id);
+            _gameState.GenerateFruit();            
         }
     }
 }

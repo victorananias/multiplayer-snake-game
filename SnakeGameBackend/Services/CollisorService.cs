@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SnakeGameBackend.Entities;
+using SnakeGameBackend.Interfaces;
 
 namespace SnakeGameBackend.Services
 {
     public class CollisorService
     {
         private List<ICollidable> _collidables;
+        public event EventHandler<CollisionEventArgs> OnCollision;
 
         public CollisorService()
         {
@@ -57,8 +60,19 @@ namespace SnakeGameBackend.Services
 
                     if (collided.Any())
                     {
-                        // COLLIDE
-                        //_gameState.Collide(collidable1, collidable2);
+                        if (OnCollision == null)
+                        {
+                            continue;
+                        }
+                        
+                        OnCollision(this, new CollisionEventArgs
+                        {
+                            Collidable1 = collidable1,
+                            Collidable2 = collidable2
+                        });
+                        
+                        collidable1.CollidedTo(collidable2);
+                        collidable2.CollidedTo(collidable1);
                     }
 
                     colliadablesChecked[collidable1.Id].Add(collidable2.Id);
