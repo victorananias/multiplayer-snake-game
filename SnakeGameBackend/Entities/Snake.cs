@@ -20,7 +20,7 @@ namespace SnakeGameBackend.Entities
         public string Id { get; set; }
         public void CollidedTo(ICollidable collidable)
         {
-            if (typeof(Fruit) == collidable.GetType())
+            if (collidable.GetType() == typeof(Fruit))
             {
                 Grow();
             }

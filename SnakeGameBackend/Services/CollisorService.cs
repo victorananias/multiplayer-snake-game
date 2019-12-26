@@ -60,12 +60,7 @@ namespace SnakeGameBackend.Services
 
                     if (collided.Any())
                     {
-                        if (OnCollision == null)
-                        {
-                            continue;
-                        }
-                        
-                        OnCollision(this, new CollisionEventArgs
+                        OnCollision?.Invoke(this, new CollisionEventArgs
                         {
                             Collidable1 = collidable1,
                             Collidable2 = collidable2

@@ -38,8 +38,10 @@ namespace SnakeGameBackend.Services
 
         public void OnCollision(object collisorService, CollisionEventArgs args)
         {
-            var fruit = args.Collidable1.GetType() == typeof(Fruit) ? args.Collidable1 : args.Collidable2;  
+            var fruit = args.Collidable1.GetType() == typeof(Fruit) ? args.Collidable1 : args.Collidable2;
             
+            if (fruit.GetType() != typeof(Fruit)) return;
+
             _gameState.RemoveFruit(fruit.Id);
             _gameState.GenerateFruit();            
         }
