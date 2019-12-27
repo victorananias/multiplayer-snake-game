@@ -43,7 +43,10 @@ namespace SnakeGameBackend.Services
 
             if (fruit != null)
             {
-                _gameState.RemoveFruit(fruit.Id);
+                var snake = collidables.FirstOrDefault(c => c.GetType() == typeof(Snake));
+
+                _gameState.PointTo(snake?.Id);
+                _gameState.RemoveFruit(fruit?.Id);
                 _gameState.GenerateFruit();
                 return;
             }
@@ -76,12 +79,7 @@ namespace SnakeGameBackend.Services
                 )
                 select hitbox2;
 
-            if (collided.Any())
-            {
-                return collided.Any();
-            }
-
-            return false;
+            return collided.Any();
         }
     }
 }

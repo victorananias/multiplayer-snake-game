@@ -6,5 +6,6 @@ namespace SnakeGameBackend.Entities
     {
         public List<Snake> Snakes { get; set; }
         public List<Fruit> Fruits { get; set; }
+        public List<Score> ScoreList { get; set; }
     }
 }

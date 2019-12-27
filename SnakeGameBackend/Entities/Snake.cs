@@ -15,12 +15,12 @@ namespace SnakeGameBackend.Entities
             LastUpdate = DateTime.Now;
             ShouldGrow = false;
             Direction = "";
-            DefaultSpeed = 300;
-            CurrentSpeed = DefaultSpeed;
+            DefaultUpdateTime = 300;
+            CurrentUpdateTime = DefaultUpdateTime;
         }
 
-        public int DefaultSpeed { get; set; }
-        public int CurrentSpeed { get; set; }
+        public int DefaultUpdateTime { get; set; }
+        public int CurrentUpdateTime { get; set; }
         public string Id { get; set; }
         public SnakePiece Head { get; set; }
         public List<SnakePiece> Body { get; set; }
@@ -39,12 +39,12 @@ namespace SnakeGameBackend.Entities
         internal void Move(string direction)
         {
             Direction = direction;
-            CurrentSpeed = 100;
+            CurrentUpdateTime = 100;
         }
 
         public void ReduceSpeed()
         {
-            CurrentSpeed = DefaultSpeed;
+            CurrentUpdateTime = DefaultUpdateTime;
         }
 
         public void CollidedTo(ICollidable collidable)
@@ -137,7 +137,7 @@ namespace SnakeGameBackend.Entities
         {
             var now = DateTime.Now;
       
-            if (now.Subtract(LastUpdate).TotalMilliseconds <= CurrentSpeed)
+            if (now.Subtract(LastUpdate).TotalMilliseconds <= CurrentUpdateTime)
             {
                 return false;
             }
