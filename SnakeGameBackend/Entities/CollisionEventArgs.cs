@@ -4,7 +4,6 @@ namespace SnakeGameBackend.Entities
 {
     public class CollisionEventArgs
     {
-        public ICollidable Collidable1 { get; set; }
-        public ICollidable Collidable2 { get; set; }
+        public ICollidable[] Collidables { get; set; }
     }
 }

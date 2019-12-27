@@ -36,14 +36,52 @@ namespace SnakeGameBackend.Services
             _collisorService.setCollidables(collidables).Check();
         }
 
-        public void OnCollision(object collisorService, CollisionEventArgs args)
+        private void OnCollision(object collisorService, CollisionEventArgs args)
         {
-            var fruit = args.Collidable1.GetType() == typeof(Fruit) ? args.Collidable1 : args.Collidable2;
-            
-            if (fruit.GetType() != typeof(Fruit)) return;
+            var collidables = args.Collidables;
+            var fruit = collidables.FirstOrDefault(c => c.GetType() == typeof(Fruit));
 
-            _gameState.RemoveFruit(fruit.Id);
-            _gameState.GenerateFruit();            
+            if (fruit != null)
+            {
+                _gameState.RemoveFruit(fruit.Id);
+                _gameState.GenerateFruit();
+                return;
+            }
+
+            var collided1 = CollidedToOponent(collidables[0], collidables[1]);
+            var collided2 = CollidedToOponent(collidables[1], collidables[0]);
+
+            if (collided1)
+            {
+                _gameState.RemoveSnake(collidables[0].Id);
+            }
+            
+            if (collided2)
+            {
+                _gameState.RemoveSnake(collidables[1].Id);
+            }
+        }
+
+        private bool CollidedToOponent(ICollidable collidable1, ICollidable collidable2)
+        {
+            var hitbox1 = collidable1.Hitboxes.First();
+
+            var collided = from hitbox2 in collidable2.Hitboxes
+                where (
+                    hitbox1.X >= hitbox2.X
+                    && hitbox1.X + hitbox1.Width <= hitbox2.X + hitbox2.Width
+                    && hitbox1.Y >= hitbox2.Y
+
+                    && hitbox1.Y + hitbox1.Height <= hitbox2.Y + hitbox1.Height
+                )
+                select hitbox2;
+
+            if (collided.Any())
+            {
+                return collided.Any();
+            }
+
+            return false;
         }
     }
 }

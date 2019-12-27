@@ -62,8 +62,7 @@ namespace SnakeGameBackend.Services
                     {
                         OnCollision?.Invoke(this, new CollisionEventArgs
                         {
-                            Collidable1 = collidable1,
-                            Collidable2 = collidable2
+                            Collidables = new [] {collidable1, collidable2}
                         });
                         
                         collidable1.CollidedTo(collidable2);
