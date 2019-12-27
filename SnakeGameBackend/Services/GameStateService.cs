@@ -10,6 +10,8 @@ namespace SnakeGameBackend.Services
     {
 
         public int PlayersLimit;
+        public GameState State { get; set; }
+
         public GameStateService()
         {
             State = new GameState
@@ -20,8 +22,6 @@ namespace SnakeGameBackend.Services
             };
             PlayersLimit = 2;
         }
-
-        public GameState State { get; set; }
 
         public void AddSnake(string id)
         {
@@ -38,6 +38,16 @@ namespace SnakeGameBackend.Services
                 PlayerId = id,
                 Points = 0
             });
+        }
+
+        internal void ResetState()
+        {
+            State = new GameState
+            {
+                Snakes = new List<Snake>(),
+                Fruits = new List<Fruit>(),
+                ScoreList = new List<Score>()
+            };
         }
 
         public void GenerateFruit()

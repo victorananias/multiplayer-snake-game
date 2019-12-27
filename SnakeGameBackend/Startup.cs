@@ -27,6 +27,8 @@ namespace SnakeGameBackend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers();
+
             services.AddSingleton(new GameStateService());
 
             services.AddScoped<GameService>();
@@ -55,7 +57,10 @@ namespace SnakeGameBackend
                 options => options.SetIsOriginAllowed(x => _ = true).AllowAnyMethod().AllowAnyHeader().AllowCredentials()
             );
 
-            app.UseEndpoints(endpoints => { endpoints.MapHub<GameHub>("/gamehub"); });
+            app.UseEndpoints(endpoints => {
+                endpoints.MapHub<GameHub>("/gamehub");
+                endpoints.MapControllers();
+            });
         }
     }
 }
