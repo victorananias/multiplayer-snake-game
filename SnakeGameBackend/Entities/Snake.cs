@@ -15,23 +15,18 @@ namespace SnakeGameBackend.Entities
             LastUpdate = DateTime.Now;
             ShouldGrow = false;
             Direction = "";
+            DefaultSpeed = 300;
+            CurrentSpeed = DefaultSpeed;
         }
 
+        public int DefaultSpeed { get; set; }
+        public int CurrentSpeed { get; set; }
         public string Id { get; set; }
-        public void CollidedTo(ICollidable collidable)
-        {
-            if (collidable.GetType() == typeof(Fruit))
-            {
-                Grow();
-            }
-        }
-
         public SnakePiece Head { get; set; }
         public List<SnakePiece> Body { get; set; }
         public bool ShouldGrow { get; set; }
         public DateTime LastUpdate { get; set; }
         public string Direction { get; set; }
-
         public List<Hitbox> Hitboxes
         {
             get {
@@ -40,10 +35,35 @@ namespace SnakeGameBackend.Entities
                 return hitboxes;
             }
         }
-        
+
+        internal void Move(string direction)
+        {
+            Direction = direction;
+            CurrentSpeed = 100;
+        }
+
+        public void ReduceSpeed()
+        {
+            CurrentSpeed = DefaultSpeed;
+        }
+
+        public void CollidedTo(ICollidable collidable)
+        {
+            if (collidable.GetType() == typeof(Fruit))
+            {
+                Grow();
+            }
+        }
+
 
         internal void Update()
         {
+
+            if (!ShouldUpdate())
+            {
+                return;
+            }
+
             var y = Head.Y;
             var x = Head.X;
 
@@ -111,6 +131,20 @@ namespace SnakeGameBackend.Entities
         internal void Grow()
         {
             Body.Add(new SnakePiece(-200,-200));
+        }
+
+        private bool ShouldUpdate()
+        {
+            var now = DateTime.Now;
+      
+            if (now.Subtract(LastUpdate).TotalMilliseconds <= CurrentSpeed)
+            {
+                return false;
+            }
+
+            LastUpdate = now;
+
+            return true;
         }
     }
 }

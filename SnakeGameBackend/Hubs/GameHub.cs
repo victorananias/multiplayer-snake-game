@@ -22,6 +22,11 @@ namespace SnakeGameBackend.Hubs
             _gameService.MoveSnake(Context.ConnectionId, direction);
         }
 
+        public void ReduceSnakeSpeed()
+        {
+            _gameService.ReduceSnakeSpeed(Context.ConnectionId);
+        }
+
         public async override Task OnConnectedAsync()
         {
             _gameService.AddSnake(Context.ConnectionId);

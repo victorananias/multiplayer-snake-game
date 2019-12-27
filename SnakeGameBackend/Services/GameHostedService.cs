@@ -35,7 +35,7 @@ namespace SnakeGameBackend.Services
 
                 await clients.All.SendAsync("UpdateView", _game.State, cancellationToken: stoppingToken);
 
-                await Task.Delay(200, stoppingToken);
+                await Task.Delay(10, stoppingToken);
             }
         }
     }

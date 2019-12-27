@@ -37,28 +37,31 @@ namespace SnakeGameBackend.Services
 
         internal void MoveSnake(string connectionId, string direction)
         {
-            State.Snakes.First(s => s.Id == connectionId).Direction = direction;
+            GetSnakeById(connectionId).Move(direction);
+        }
+
+        internal void ReduceSnakeSpeed(string connectionId)
+        {
+            GetSnakeById(connectionId).ReduceSpeed();
         }
 
         public void RemoveSnake(string id)
         {
-            State.Snakes.Remove(State.Snakes.Find(s => s.Id == id));
+            State.Snakes.Remove(GetSnakeById(id));
         }
 
         public void RemoveFruit(string id)
         {
-            State.Fruits.Remove(State.Fruits.Find(s => s.Id == id));
+            State.Fruits.Remove(GetFruitById(id));
         }
 
-        public void Collide(ICollidable collidable1, ICollidable collidable2)
+        private Snake GetSnakeById(string id)
         {
-            collidable1.CollidedTo(collidable2);
-            collidable1.CollidedTo(collidable1);
-
-            var fruit = collidable1.GetType() == typeof(Snake) ? collidable2 : collidable1;
-
-            RemoveFruit(fruit.Id);
-            GenerateFruit();
+            return State.Snakes.Find(s => s.Id == id);
+        }
+        private Fruit GetFruitById(string id)
+        {
+            return State.Fruits.Find(s => s.Id == id);
         }
     }
 }
