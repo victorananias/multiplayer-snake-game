@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SnakeGameBackend.Entities
+namespace MultiplayerSnakeGame.Entities
 {
     public class GameState
     {

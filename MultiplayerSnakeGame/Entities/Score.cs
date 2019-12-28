@@ -1,4 +1,4 @@
-﻿namespace SnakeGameBackend.Entities
+﻿namespace MultiplayerSnakeGame.Entities
 {
     public class Score
     {

@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Hosting;
-using SnakeGameBackend.Hubs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using SnakeGameBackend.Entities;
+using MultiplayerSnakeGame.Hubs;
+using MultiplayerSnakeGame.Entities;
 
-namespace SnakeGameBackend.Services
+namespace MultiplayerSnakeGame.Services
 {
     public class GameHostedService : BackgroundService
     {

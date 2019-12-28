@@ -1,6 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnakeGameBackend", "SnakeGameBackend\SnakeGameBackend.csproj", "{2471A331-7F81-4C61-BA8B-700BC7BA5574}"
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MultiplayerSnakeGame", "MultiplayerSnakeGame\MultiplayerSnakeGame.csproj", "{2471A331-7F81-4C61-BA8B-700BC7BA5574}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +15,11 @@ Global
 		{2471A331-7F81-4C61-BA8B-700BC7BA5574}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2471A331-7F81-4C61-BA8B-700BC7BA5574}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2471A331-7F81-4C61-BA8B-700BC7BA5574}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0ED30999-46D1-4170-9DF3-FFAA47E06F20}
 	EndGlobalSection
 EndGlobal

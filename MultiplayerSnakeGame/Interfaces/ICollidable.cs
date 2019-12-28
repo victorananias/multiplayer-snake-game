@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using SnakeGameBackend.Entities;
+using MultiplayerSnakeGame.Entities;
 
-namespace SnakeGameBackend.Interfaces
+namespace MultiplayerSnakeGame.Interfaces
 {
     public interface ICollidable
     {

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SnakeGameBackend.Entities;
-using SnakeGameBackend.Interfaces;
+using MultiplayerSnakeGame.Entities;
+using MultiplayerSnakeGame.Interfaces;
 
-namespace SnakeGameBackend.Services
+namespace MultiplayerSnakeGame.Services
 {
     public class CollisorService
     {

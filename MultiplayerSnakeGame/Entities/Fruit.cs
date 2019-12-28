@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using SnakeGameBackend.Interfaces;
+using MultiplayerSnakeGame.Interfaces;
 
-namespace SnakeGameBackend.Entities
+namespace MultiplayerSnakeGame.Entities
 {
     public class Fruit: ICollidable
     {

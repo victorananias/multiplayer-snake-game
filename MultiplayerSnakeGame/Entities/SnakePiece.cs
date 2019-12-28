@@ -1,6 +1,6 @@
 using System;
 
-namespace SnakeGameBackend.Entities
+namespace MultiplayerSnakeGame.Entities
 {
     public class SnakePiece
     {

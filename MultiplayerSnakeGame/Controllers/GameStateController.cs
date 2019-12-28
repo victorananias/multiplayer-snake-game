@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SnakeGameBackend.Services;
+using MultiplayerSnakeGame.Services;
 
-namespace SnakeGameBackend.Controllers
+namespace MultiplayerSnakeGame.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
