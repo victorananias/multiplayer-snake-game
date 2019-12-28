@@ -1,5 +1,5 @@
 {
-  "name": "js-snake-game",
+  "name": "multiplayer-snake-game",
   "version": "1.0.0",
   "description": "Snake Game",
   "main": "index.html",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/victorananias/js-snake-game.git"
+    "url": ""
   },
   "author": "Victor Ananias",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/victorananias/js-snake-game/issues"
+    "url": ""
   },
-  "homepage": "https://github.com/victorananias/js-snake-game#readme",
+  "homepage": "",
   "dependencies": {
     "@microsoft/signalr": "^3.0.1"
   }

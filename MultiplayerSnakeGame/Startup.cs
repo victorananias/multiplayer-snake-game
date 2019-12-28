@@ -27,7 +27,7 @@ namespace MultiplayerSnakeGame
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllersWithViews();
 
             services.AddSingleton(new GameStateService());
 
@@ -53,13 +53,17 @@ namespace MultiplayerSnakeGame
 
             app.UseRouting();
 
+            app.UseStaticFiles();
+
             app.UseCors(
                 options => options.SetIsOriginAllowed(x => _ = true).AllowAnyMethod().AllowAnyHeader().AllowCredentials()
             );
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapHub<GameHub>("/gamehub");
-                endpoints.MapControllers();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

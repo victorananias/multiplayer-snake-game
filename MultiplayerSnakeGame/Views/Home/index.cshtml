@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Snake Game</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="~/css/style.css">
+</head>
+
+<body>
+  <div class="flex-center">
+    <div class="game-container">
+      <canvas id="game" width="500" height="500"></canvas>
+    </div>
+
+    <div class="info-container">
+      <table id="score">
+        <thead>
+          <tr>
+            <th colspan="2">
+              Scores
+            </th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="~/node_modules/@@microsoft/signalr/dist/browser/signalr.min.js"></script>
+  <script src="~/js/Game.js"></script>
+  <script src="~/js/Collisor.js"></script>
+  <script src="~/js/Keyboard.js"></script>
+  <script src="~/js/ScreenLimit.js"></script>
+  <script src="~/js/Background.js"></script>
+  <script src="~/js/Fruit.js"></script>
+  <script src="~/js/SnakePiece.js"></script>
+  <script src="~/js/Snake.js"></script>
+  <script src="~/js/script.js"></script>
+</body>
+
+</html>
