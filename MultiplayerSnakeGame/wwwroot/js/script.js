@@ -1,5 +1,8 @@
 "use strict"
 
+let urlParams = new URLSearchParams(window.location.search)
+
+
 const $ = document.querySelector.bind(document);
 
 const MOVE_LEFT = 'a',
@@ -8,38 +11,32 @@ const MOVE_LEFT = 'a',
   MOVE_DOWN = 's',
   PAUSE = ' ';
 
-const SIZE = 20
-const SPEED = 180
-
-let scorePoints = 0
+let gameId = urlParams.get('game');
 
 const canvas = $('#game')
 const context = canvas.getContext('2d')
-const pause = $('#pause')
 
 const background = new Background(context)
 const keyboard = new Keyboard()
-const game = new Game()
 
 const connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:5001/gamehub").build()
-
-let lastUpdate = new Date().getTime()
 
 let scoreList = [];
 
 connection.start()
-.then(function () {
-  console.log('connected')
-}).catch(function (err) {
-    return console.error(err.toString());
-})
+  .then(() => {
+    console.log('connected')
+    joinGame()
+  })
+  .catch(err => console.error(err.toString()))
 
-connection.on("UpdateView", (state) => {
+connection.on("Update", (data) => {
+  gameId = data.id
   context.clearRect(0, 0, 500, 500)
 
   background.draw()
 
-  state.snakes.forEach(s => {
+  data.snakes.forEach(s => {
     const snake = new Snake(s, context)
 
     if (snake.id != connection.connectionId) {
@@ -49,41 +46,16 @@ connection.on("UpdateView", (state) => {
     snake.draw()
   })
 
-  state.fruits.forEach(f => {
+  data.fruits.forEach(f => {
     const fruit = new Fruit(f, context)
     fruit.draw()
   })
 
-  if (JSON.stringify(scoreList) != JSON.stringify(state.scoreList)) {
-    scoreList = state.scoreList
+  if (JSON.stringify(scoreList) != JSON.stringify(data.scoreList)) {
+    scoreList = data.scoreList
     updateScore()
   }
 })
-
-
-function updateScore() {
-  console.log(document.querySelectorAll('#score tr'));
-  [...document.querySelectorAll('#score tbody tr')].forEach(e => e.remove())
-
-  scoreList.forEach(s => {
-    $('#score').innerHTML += `
-      <tr class="${s.playerId == connection.connectionId ? 'score-current-player ' : ''}">
-        <td>${s.playerId}</td>
-        <td>${s.points}</td>
-      </tr>
-    `
-  })
-}
-
-// collisor.addObject(new ScreenLimit(-20, 0, 20, 500))
-// collisor.addObject(new ScreenLimit(501, 0, 20, 500))
-// collisor.addObject(new ScreenLimit(0, -20, 500, 20))
-// collisor.addObject(new ScreenLimit(0, 0, 500, 20))
-// collisor.addObject(fruit)
-
-// collisor.whenCollide([ScreenLimit.name, SnakePiece.name], gameOver)
-// collisor.whenCollide([SnakePiece.name, SnakePiece.name], gameOver)
-// collisor.whenCollide([SnakePiece.name, Fruit.name], score)
 
 keyboard.onPress(MOVE_LEFT, () => {
   sendMove('left')
@@ -116,45 +88,28 @@ keyboard.onRelease(MOVE_DOWN, () => {
   reduceSpeed()
 })
 
+
+function updateScore() {
+  [...document.querySelectorAll('#score tbody tr')].forEach(e => e.remove())
+
+  scoreList.forEach(s => {
+      $('#score').innerHTML += `
+      <tr class="${s.playerId == connection.connectionId ? 'score-current-player ' : ''}">
+        <td>${s.playerId}</td>
+        <td>${s.points}</td>
+      </tr>
+    `
+  })
+}
+
+function joinGame() {
+  connection.invoke("JoinGame", gameId).catch(err => console.error(err.toString()))
+}
+
 function sendMove(pos) {
-  connection.invoke("Move", pos).catch(function (err) {
-    return console.error(err.toString());
-  });
+  connection.invoke("Move", gameId, pos).catch(err => console.error(err.toString()))
 }
 
 function reduceSpeed() {
-  connection.invoke("ReduceSnakeSpeed").catch(function (err) {
-    return console.error(err.toString());
-  });
+  connection.invoke("ReduceSnakeSpeed", gameId).catch(err => console.error(err.toString()))
 }
-
-// keyboard.onPress(PAUSE, () => {
-//   if (game.isOver) {
-//     return
-//   }
-
-//   if (game.isPaused) {
-//     game.unpause()
-//     pause.classList.add('hidden')
-//   } else {
-//     game.pause()
-//     pause.classList.remove('hidden')
-//   }
-// })
-
-// game.addToDraw(background)
-// game.addToDraw(snake)
-// game.executeAfterDraw(() => collisor.check())
-
-game.start()
-
-// function score() {
-//   scorePoints += 10
-//   $('#score #points').innerHTML = scorePoints
-// }
-
-// function gameOver() {
-//   const gameOver = $('#game-over')
-//   gameOver.style.webkitAnimationPlayState = 'running'
-//   game.over()
-// }

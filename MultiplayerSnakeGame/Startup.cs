@@ -29,12 +29,10 @@ namespace MultiplayerSnakeGame
         {
             services.AddControllersWithViews();
 
-            services.AddSingleton(new GameStateService());
-
-            services.AddScoped<GameService>();
-
             services.AddHostedService<GameHostedService>();
+
             services.AddScoped<CollisorService>();
+            services.AddSingleton<GamesService>();
 
             services.AddCors();
 

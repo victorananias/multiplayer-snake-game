@@ -10,34 +10,38 @@ namespace MultiplayerSnakeGame.Hubs
 {
     public class GameHub : Hub
     {
-        private GameStateService _gameService;
+        private GamesService _gamesService;
 
-        public GameHub(GameStateService gameService)
+        public GameHub(GamesService gamesService)
         {
-            _gameService = gameService;
+            _gamesService = gamesService;
         }
 
-        public void Move(string direction)
+        public void Move(string gameId, string direction)
         {
-            _gameService.MoveSnake(Context.ConnectionId, direction);
+            _gamesService.MoveSnake(gameId, Context.ConnectionId, direction);
         }
 
-        public void ReduceSnakeSpeed()
+        public void ReduceSnakeSpeed(string gameId)
         {
-            _gameService.ReduceSnakeSpeed(Context.ConnectionId);
+            _gamesService.ReduceSnakeSpeed(gameId, Context.ConnectionId);
+        }
+
+        public void JoinGame(string gameId = null)
+        {
+            Console.WriteLine($"Player {Context.ConnectionId} joined game \"{gameId}\"");
+            _gamesService.JoinGame(gameId, Context.ConnectionId);
         }
 
         public async override Task OnConnectedAsync()
         {
-            _gameService.AddSnake(Context.ConnectionId);
-            _gameService.GenerateFruit();
-
-            await Clients.All.SendAsync("ReceiveMessage", _gameService.State);
+            Console.WriteLine($"Id {Context.ConnectionId} connected.");
         }
 
         public async override Task OnDisconnectedAsync(Exception exception)
         {
-            _gameService.RemoveSnake(Context.ConnectionId);
+            _gamesService.RemovePlayer(Context.ConnectionId);
+            Console.WriteLine($"Id {Context.ConnectionId} connected.");
         }
     }
 }

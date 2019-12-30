@@ -13,27 +13,29 @@ namespace MultiplayerSnakeGame.Services
 {
     public class GameHostedService : BackgroundService
     {
-        private IHubContext<GameHub> _hubContext;
-        private GameService _game;
+        private IHubContext<GameHub> _hub;
+        private GamesService _gameService;
 
         public GameHostedService(
-            IHubContext<GameHub> hubContext, 
-            GameService game
+            IHubContext<GameHub> hub, 
+            GamesService gameService
         )
         {
-            _hubContext = hubContext;
-            _game = game;
+            _hub = hub;
+            _gameService = gameService;
         }
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var clients = _hubContext.Clients;
+            var clients = _hub.Clients;
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                _game.Update();
-
-                await clients.All.SendAsync("UpdateView", _game.State, cancellationToken: stoppingToken);
+                foreach (var game in _gameService.Games)
+                {
+                    game.Run();
+                    await clients.Groups(game.Id).SendAsync("Update", game, cancellationToken: stoppingToken);
+                }
 
                 await Task.Delay(10, stoppingToken);
             }
