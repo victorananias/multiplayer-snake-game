@@ -17,20 +17,20 @@ namespace MultiplayerSnakeGame.Hubs
             _gamesService = gamesService;
         }
 
-        public void Move(string gameId, string direction)
+        public void Move(string direction)
         {
-            _gamesService.MoveSnake(gameId, Context.ConnectionId, direction);
+            _gamesService.MoveSnake(Context.ConnectionId, direction);
         }
 
-        public void ReduceSnakeSpeed(string gameId)
+        public void ReduceSnakeSpeed()
         {
-            _gamesService.ReduceSnakeSpeed(gameId, Context.ConnectionId);
+            _gamesService.ReduceSnakeSpeed(Context.ConnectionId);
         }
 
         public void JoinGame(string gameId = null)
         {
             Console.WriteLine($"Player {Context.ConnectionId} joined game \"{gameId}\"");
-            _gamesService.JoinGame(gameId, Context.ConnectionId);
+            _gamesService.AddPlayer(gameId, Context.ConnectionId);
         }
 
         public async override Task OnConnectedAsync()

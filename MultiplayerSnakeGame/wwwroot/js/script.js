@@ -1,8 +1,5 @@
 "use strict"
 
-let urlParams = new URLSearchParams(window.location.search)
-
-
 const $ = document.querySelector.bind(document);
 
 const MOVE_LEFT = 'a',
@@ -10,8 +7,6 @@ const MOVE_LEFT = 'a',
   MOVE_UP = 'w',
   MOVE_DOWN = 's',
   PAUSE = ' ';
-
-let gameId = urlParams.get('game');
 
 const canvas = $('#game')
 const context = canvas.getContext('2d')
@@ -31,7 +26,6 @@ connection.start()
   .catch(err => console.error(err.toString()))
 
 connection.on("Update", (data) => {
-  gameId = data.id
   context.clearRect(0, 0, 500, 500)
 
   background.draw()
@@ -107,9 +101,9 @@ function joinGame() {
 }
 
 function sendMove(pos) {
-  connection.invoke("Move", gameId, pos).catch(err => console.error(err.toString()))
+  connection.invoke("Move", pos).catch(err => console.error(err.toString()))
 }
 
 function reduceSpeed() {
-  connection.invoke("ReduceSnakeSpeed", gameId).catch(err => console.error(err.toString()))
+  connection.invoke("ReduceSnakeSpeed").catch(err => console.error(err.toString()))
 }

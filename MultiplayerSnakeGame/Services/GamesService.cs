@@ -4,13 +4,13 @@ using System.Linq;
 using Microsoft.AspNetCore.SignalR;
 using MultiplayerSnakeGame.Entities;
 using MultiplayerSnakeGame.Hubs;
-using MultiplayerSnakeGame.Interfaces;
 
 namespace MultiplayerSnakeGame.Services
 {
     public class GamesService
     {
         public List<Game> Games { get; set; }
+        public List<Player> Players { get; set; }
         private IHubContext<GameHub> _hub;
 
         public GamesService(
@@ -20,14 +20,10 @@ namespace MultiplayerSnakeGame.Services
         {
             _hub = hub;
             Games = new List<Game>();
+            Players = new List<Player>();
         }
 
-        public void RunGames()
-        {
-            Games.ForEach(game => game.Run());
-        }
-
-        public void JoinGame(string gameId, string connectionId)
+        public void AddPlayer(string gameId, string playerId)
         {
             if (gameId == null)
             {
@@ -42,34 +38,48 @@ namespace MultiplayerSnakeGame.Services
                 Games.Add(game);
             }
 
-            game.Add(connectionId);
+            AddToPlayersList(gameId, playerId);
+
+            game.Add(playerId);
             game.GenerateFruit();
 
-            _hub.Groups.AddToGroupAsync(connectionId, groupName: gameId);
+            _hub.Groups.AddToGroupAsync(playerId, groupName: gameId);
         }
 
-        public void RemovePlayer(string snakeId)
+        private void AddToPlayersList(string gameId, string playerId)
         {
-            foreach (var game in Games)
+            Players.Add(new Player
             {
-                var snake = game.GetSnakeById(snakeId);
+                Id = playerId,
+                GameId = gameId
+            });
+        }
 
-                if (snake == null) continue;
-
-                game.RemoveSnake(snake.Id);
+        public void RemovePlayer(string playerId)
+        {
+            var playerInfo = Players.SingleOrDefault(p => p.Id == playerId);
+            var game = Games.SingleOrDefault(g => g.Id == playerInfo.GameId);
                 
-                return;
+            game.RemoveSnakeById(playerId);
+
+            if (!game.Snakes.Any())
+            {
+                Games.Remove(game);
             }
+
+            Console.WriteLine($"There are {Games.Count} games being played.");
         }
 
-        public void MoveSnake(string gameId, string snakeId, string direction)
+        public void MoveSnake(string playerId, string direction)
         {
-            GetGameById(gameId)?.MoveSnake(snakeId, direction);
+            var player = Players.FirstOrDefault(p => p.Id == playerId);
+            GetGameById(player.GameId)?.MoveSnake(playerId, direction);
         }
 
-        public void ReduceSnakeSpeed(string gameId, string snakeId)
+        public void ReduceSnakeSpeed(string playerId)
         {
-            GetGameById(gameId)?.ReduceSnakeSpeed(snakeId);
+            var player = Players.FirstOrDefault(p => p.Id == playerId);
+            GetGameById(player.GameId)?.ReduceSnakeSpeed(playerId);
         }
 
         private Game GetGameById(string gameId)

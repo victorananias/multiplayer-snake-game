@@ -82,6 +82,12 @@ namespace MultiplayerSnakeGame.Entities
             }
         }
 
+        public void RemoveSnakeById(string snakeId)
+        {
+            var snake = GetSnakeById(snakeId);
+            RemoveSnake(snake.Id);
+        }
+
         private bool CollidedToOponent(ICollidable collidable1, ICollidable collidable2)
         {
             var hitbox1 = collidable1.Hitboxes.First();
