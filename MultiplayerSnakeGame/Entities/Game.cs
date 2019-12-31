@@ -28,20 +28,22 @@ namespace MultiplayerSnakeGame.Entities
             PlayersLimit = 2;
         }
 
-        public void Add(string connectionId)
+        public Snake CreateSnake(string snakeId)
         {
             if (Snakes.Count == PlayersLimit)
             {
-                return;
+                return null;
             }
 
-            var snake = new Snake(connectionId, 200, 100);
+            var snake = new Snake(snakeId, Id, 200, 100);
 
             Snakes.Add(snake);
             ScoreList.Add(new Score
             {
-                PlayerId = connectionId
+                PlayerId = snakeId
             });
+
+            return snake;
         }
 
         public void GenerateFruit()

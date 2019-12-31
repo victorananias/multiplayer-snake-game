@@ -7,7 +7,7 @@ namespace MultiplayerSnakeGame.Entities
 {
     public class Snake: ICollidable
     {
-        public Snake(string id, int x, int y)
+        public Snake(string id, string gameId, int x, int y)
         {
             Id = id;
             Head = new SnakePiece(x, y);
@@ -17,11 +17,13 @@ namespace MultiplayerSnakeGame.Entities
             Direction = "";
             DefaultUpdateTime = 300;
             CurrentUpdateTime = DefaultUpdateTime;
+            GameId = gameId;
         }
 
         public int DefaultUpdateTime { get; set; }
         public int CurrentUpdateTime { get; set; }
         public string Id { get; set; }
+        public string GameId { get; set; }
         public SnakePiece Head { get; set; }
         public List<SnakePiece> Body { get; set; }
         public bool ShouldGrow { get; set; }

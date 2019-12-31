@@ -2,11 +2,7 @@
 
 const $ = document.querySelector.bind(document);
 
-const MOVE_LEFT = 'a',
-  MOVE_RIGHT = 'd',
-  MOVE_UP = 'w',
-  MOVE_DOWN = 's',
-  PAUSE = ' ';
+const KEYS = ["w", "a", "s", "d"]
 
 const canvas = $('#game')
 const context = canvas.getContext('2d')
@@ -51,37 +47,18 @@ connection.on("Update", (data) => {
   }
 })
 
-keyboard.onPress(MOVE_LEFT, () => {
-  sendMove('left')
-})
-keyboard.onPress(MOVE_RIGHT, () => {
-  sendMove('right')
-})
-keyboard.onPress(MOVE_UP, () => {
-  sendMove('up')
-})
-keyboard.onPress(MOVE_DOWN, () => {
-  sendMove('down')
+KEYS.forEach(key => {
+  keyboard.onPress(key, () => keyPressed(key))
+  keyboard.onRelease(key, () => keyReleased(key))
 })
 
-keyboard.onPress(PAUSE, () => {
-  sendMove('')
-})
+function keyPressed(key) {
+    connection.invoke("KeyPressed", key).catch(err => console.error(err.toString()))
+}
 
-
-keyboard.onRelease(MOVE_LEFT, () => {
-  reduceSpeed()
-})
-keyboard.onRelease(MOVE_RIGHT, () => {
-  reduceSpeed()
-})
-keyboard.onRelease(MOVE_UP, () => {
-  reduceSpeed()
-})
-keyboard.onRelease(MOVE_DOWN, () => {
-  reduceSpeed()
-})
-
+function keyReleased(key) {
+    connection.invoke("KeyReleased", key).catch(err => console.error(err.toString()))
+}
 
 function updateScore() {
   [...document.querySelectorAll('#score tbody tr')].forEach(e => e.remove())
@@ -98,12 +75,4 @@ function updateScore() {
 
 function joinGame() {
   connection.invoke("JoinGame", gameId).catch(err => console.error(err.toString()))
-}
-
-function sendMove(pos) {
-  connection.invoke("Move", pos).catch(err => console.error(err.toString()))
-}
-
-function reduceSpeed() {
-  connection.invoke("ReduceSnakeSpeed").catch(err => console.error(err.toString()))
 }

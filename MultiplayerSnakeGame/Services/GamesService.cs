@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
+using MultiplayerSnakeGame.Data;
 using MultiplayerSnakeGame.Entities;
 using MultiplayerSnakeGame.Hubs;
 
@@ -9,18 +11,16 @@ namespace MultiplayerSnakeGame.Services
 {
     public class GamesService
     {
-        public List<Game> Games { get; set; }
-        public List<Player> Players { get; set; }
         private IHubContext<GameHub> _hub;
+        private GamesContext _context;
 
         public GamesService(
-            CollisorService collisorService,
+            GamesContext context,
             IHubContext<GameHub> hub
         )
         {
+            _context = context;
             _hub = hub;
-            Games = new List<Game>();
-            Players = new List<Player>();
         }
 
         public void AddPlayer(string gameId, string playerId)
@@ -35,56 +35,55 @@ namespace MultiplayerSnakeGame.Services
             if (game == null)
             {
                 game = new Game(gameId);
-                Games.Add(game);
+                _context.Games.Add(game);
             }
 
-            AddToPlayersList(gameId, playerId);
-
-            game.Add(playerId);
+            var snake = game.CreateSnake(playerId);
             game.GenerateFruit();
+            _context.Snakes.Add(snake);
 
             _hub.Groups.AddToGroupAsync(playerId, groupName: gameId);
         }
 
-        private void AddToPlayersList(string gameId, string playerId)
+        public async Task RunGames()
         {
-            Players.Add(new Player
+            foreach (var game in _context.Games)
             {
-                Id = playerId,
-                GameId = gameId
-            });
+                game.Run();
+                await _hub.Clients.Groups(game.Id).SendAsync("Update", game);
+            }
         }
 
-        public void RemovePlayer(string playerId)
+        public void RemoveSnake(string snakeId)
         {
-            var playerInfo = Players.SingleOrDefault(p => p.Id == playerId);
-            var game = Games.SingleOrDefault(g => g.Id == playerInfo.GameId);
+            var playerInfo = _context.Snakes.SingleOrDefault(p => p.Id == snakeId);
+            var game = _context.Games.SingleOrDefault(g => g.Id == playerInfo.GameId);
                 
-            game.RemoveSnakeById(playerId);
+            game.RemoveSnakeById(snakeId);
 
             if (!game.Snakes.Any())
             {
-                Games.Remove(game);
+                _context.Games.Remove(game);
             }
 
-            Console.WriteLine($"There are {Games.Count} games being played.");
+            Console.WriteLine($"There are {_context.Games.Count} games being played.");
         }
 
-        public void MoveSnake(string playerId, string direction)
+        public void MoveOrBoost(string snakeId, string direction)
         {
-            var player = Players.FirstOrDefault(p => p.Id == playerId);
-            GetGameById(player.GameId)?.MoveSnake(playerId, direction);
+            var player = _context.Snakes.FirstOrDefault(p => p.Id == snakeId);
+            GetGameById(player.GameId)?.MoveSnake(snakeId, direction);
         }
 
-        public void ReduceSnakeSpeed(string playerId)
+        public void StopSnakeBoost(string playerId)
         {
-            var player = Players.FirstOrDefault(p => p.Id == playerId);
+            var player = _context.Snakes.FirstOrDefault(p => p.Id == playerId);
             GetGameById(player.GameId)?.ReduceSnakeSpeed(playerId);
         }
 
         private Game GetGameById(string gameId)
         {
-            return Games.FirstOrDefault(g => g.Id == gameId);
+            return _context.Games.FirstOrDefault(g => g.Id == gameId);
         }
     }
 }
