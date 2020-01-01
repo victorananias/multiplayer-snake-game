@@ -30,12 +30,16 @@ namespace MultiplayerSnakeGame.Entities
 
         public Snake CreateSnake(string snakeId)
         {
+            var random = new Random();
+            var x = random.Next(500 - 20) / 20 * 20;
+            var y = random.Next(500 - 20) / 20 * 20;
+
             if (Snakes.Count == PlayersLimit)
             {
                 return null;
             }
 
-            var snake = new Snake(snakeId, Id, 200, 100);
+            var snake = new Snake(snakeId, Id, x, y);
 
             Snakes.Add(snake);
             ScoreList.Add(new Score
@@ -75,12 +79,12 @@ namespace MultiplayerSnakeGame.Entities
 
             if (collided1)
             {
-                RemoveSnake(collidables[0].Id);
+                ((Snake) collidables[0]).Die();
             }
 
             if (collided2)
             {
-                RemoveSnake(collidables[1].Id);
+                ((Snake) collidables[1]).Die();
             }
         }
 

@@ -20,7 +20,9 @@ namespace MultiplayerSnakeGame.Hubs
         public void JoinGame(string gameId = null)
         {
             Console.WriteLine($"Player {Context.ConnectionId} joined game \"{gameId}\"");
-            _gamesService.AddPlayer(gameId, Context.ConnectionId);
+            _gamesService.AddSnake(gameId, Context.ConnectionId);
+
+            Groups.AddToGroupAsync(Context.ConnectionId, groupName: gameId);
         }
 
         public void KeyPressed(string key)

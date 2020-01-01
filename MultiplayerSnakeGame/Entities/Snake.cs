@@ -10,14 +10,14 @@ namespace MultiplayerSnakeGame.Entities
         public Snake(string id, string gameId, int x, int y)
         {
             Id = id;
+            GameId = gameId;
             Head = new SnakePiece(x, y);
             Body = new List<SnakePiece>();
             LastUpdate = DateTime.Now;
-            ShouldGrow = false;
             Direction = "";
             DefaultUpdateTime = 300;
             CurrentUpdateTime = DefaultUpdateTime;
-            GameId = gameId;
+            Alive = true;
         }
 
         public int DefaultUpdateTime { get; set; }
@@ -26,7 +26,6 @@ namespace MultiplayerSnakeGame.Entities
         public string GameId { get; set; }
         public SnakePiece Head { get; set; }
         public List<SnakePiece> Body { get; set; }
-        public bool ShouldGrow { get; set; }
         public DateTime LastUpdate { get; set; }
         public string Direction { get; set; }
         public List<Hitbox> Hitboxes
@@ -37,8 +36,9 @@ namespace MultiplayerSnakeGame.Entities
                 return hitboxes;
             }
         }
+        public bool Alive { get; set; }
 
-        internal void Move(string direction)
+        public void Move(string direction)
         {
             if (
                 (direction == "up" && Direction == "down")
@@ -68,8 +68,12 @@ namespace MultiplayerSnakeGame.Entities
         }
 
 
-        internal void Update()
+        public void Update()
         {
+            if (!Alive)
+            {
+                return;
+            }
 
             if (!ShouldUpdate())
             {
@@ -140,7 +144,12 @@ namespace MultiplayerSnakeGame.Entities
             }
         }
 
-        internal void Grow()
+        public void Die()
+        {
+            Alive = false;
+        }
+
+        private void Grow()
         {
             Body.Add(new SnakePiece(-200,-200));
         }

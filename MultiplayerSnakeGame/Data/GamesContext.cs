@@ -16,5 +16,10 @@ namespace MultiplayerSnakeGame.Data
 
         public List<Game> Games { get; set; }
         public List<Snake> Snakes { get; set; }
+
+        public Snake GetSnakeById(string snakeId)
+        {
+            return Snakes.FirstOrDefault(s => s.Id == snakeId);
+        }
     }
 }

@@ -23,11 +23,11 @@ namespace MultiplayerSnakeGame.Services
             _hub = hub;
         }
 
-        public void AddPlayer(string gameId, string playerId)
+        public void AddSnake(string gameId, string snakeId)
         {
-            if (gameId == null)
+            if (string.IsNullOrWhiteSpace(gameId))
             {
-                gameId = Guid.NewGuid().ToString();
+                return;
             }
 
             var game = GetGameById(gameId);
@@ -38,11 +38,15 @@ namespace MultiplayerSnakeGame.Services
                 _context.Games.Add(game);
             }
 
-            var snake = game.CreateSnake(playerId);
+            var snake = game.CreateSnake(snakeId);
+            
+            if (snake == null)
+            {
+                return;
+            }
+
             game.GenerateFruit();
             _context.Snakes.Add(snake);
-
-            _hub.Groups.AddToGroupAsync(playerId, groupName: gameId);
         }
 
         public async Task RunGames()
@@ -56,27 +60,32 @@ namespace MultiplayerSnakeGame.Services
 
         public void RemoveSnake(string snakeId)
         {
-            var playerInfo = _context.Snakes.SingleOrDefault(p => p.Id == snakeId);
-            var game = _context.Games.SingleOrDefault(g => g.Id == playerInfo.GameId);
-                
-            game.RemoveSnakeById(snakeId);
-
-            if (!game.Snakes.Any())
-            {
-                _context.Games.Remove(game);
-            }
+            var snake = _context.GetSnakeById(snakeId);
+            snake.Die();
         }
 
         public void MoveOrBoost(string snakeId, string direction)
         {
-            var player = _context.Snakes.FirstOrDefault(p => p.Id == snakeId);
+            var player = _context.GetSnakeById(snakeId);
+
+            if (player == null) 
+            {
+                return;
+            }
+
             GetGameById(player.GameId)?.MoveSnake(snakeId, direction);
         }
 
-        public void StopSnakeBoost(string playerId)
+        public void StopSnakeBoost(string snakeId)
         {
-            var player = _context.Snakes.FirstOrDefault(p => p.Id == playerId);
-            GetGameById(player.GameId)?.ReduceSnakeSpeed(playerId);
+            var player = _context.GetSnakeById(snakeId);
+
+            if (player == null) 
+            {
+                return;
+            }
+
+            GetGameById(player.GameId)?.ReduceSnakeSpeed(snakeId);
         }
 
         private Game GetGameById(string gameId)
