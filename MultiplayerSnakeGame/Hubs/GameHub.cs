@@ -43,11 +43,15 @@ namespace MultiplayerSnakeGame.Hubs
             {
                 direction = "down";
             }
-
-            if (string.IsNullOrEmpty(direction)) 
+            else if (key == " ")
             {
-                return;
+                direction = "";
             }
+
+            // if (string.IsNullOrEmpty(direction)) 
+            // {
+            //     return;
+            // }
 
             _gamesService.MoveOrBoost(Context.ConnectionId, direction);
         }

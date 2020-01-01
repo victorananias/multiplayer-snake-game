@@ -1,10 +1,7 @@
 "use strict"
 
-const $ = document.querySelector.bind(document);
-
-const KEYS = ["w", "a", "s", "d"]
-
-const canvas = $('#game')
+const KEYS = ['w', 'a', 's', 'd', ' ']
+const canvas = document.querySelector('#game')
 const context = canvas.getContext('2d')
 
 const background = new Background(context)
@@ -32,7 +29,7 @@ connection.on("Update", (data) => {
     if (snake.id != connection.connectionId) {
       snake.color = 'yellow';
     }
-    
+
     snake.draw()
   })
 
@@ -53,26 +50,26 @@ KEYS.forEach(key => {
 })
 
 function keyPressed(key) {
-    connection.invoke("KeyPressed", key).catch(err => console.error(err.toString()))
+  connection.invoke("KeyPressed", key).catch(err => console.error(err.toString()))
 }
 
 function keyReleased(key) {
-    connection.invoke("KeyReleased", key).catch(err => console.error(err.toString()))
+  connection.invoke("KeyReleased", key).catch(err => console.error(err.toString()))
+}
+
+function joinGame() {
+  connection.invoke("JoinGame", gameId).catch(err => console.error(err.toString()))
 }
 
 function updateScore() {
   [...document.querySelectorAll('#score tbody tr')].forEach(e => e.remove())
 
   scoreList.forEach(s => {
-      $('#score').innerHTML += `
+    document.querySelector('#score').innerHTML += `
       <tr class="${s.playerId == connection.connectionId ? 'score-current-player ' : ''}">
         <td>${s.playerId}</td>
         <td>${s.points}</td>
       </tr>
     `
   })
-}
-
-function joinGame() {
-  connection.invoke("JoinGame", gameId).catch(err => console.error(err.toString()))
 }

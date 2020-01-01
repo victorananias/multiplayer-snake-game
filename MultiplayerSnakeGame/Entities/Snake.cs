@@ -40,6 +40,16 @@ namespace MultiplayerSnakeGame.Entities
 
         internal void Move(string direction)
         {
+            if (
+                (direction == "up" && Direction == "down")
+                || (direction == "down" && Direction == "up")
+                || (direction == "right" && Direction == "left")
+                || (direction == "left" && Direction == "right")
+            )
+            {
+                return;
+            }
+
             Direction = direction;
             CurrentUpdateTime = 100;
         }

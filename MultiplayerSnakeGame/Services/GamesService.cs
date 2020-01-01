@@ -65,8 +65,6 @@ namespace MultiplayerSnakeGame.Services
             {
                 _context.Games.Remove(game);
             }
-
-            Console.WriteLine($"There are {_context.Games.Count} games being played.");
         }
 
         public void MoveOrBoost(string snakeId, string direction)
