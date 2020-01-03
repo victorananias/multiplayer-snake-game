@@ -58,7 +58,7 @@ namespace MultiplayerSnakeGame.Services
             }
         }
 
-        public void RemoveSnake(string snakeId)
+        public void KillSnakeById(string snakeId)
         {
             var snake = _context.GetSnakeById(snakeId);
             snake.Die();

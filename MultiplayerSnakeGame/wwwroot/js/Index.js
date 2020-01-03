@@ -66,8 +66,8 @@ function updateScore() {
 
   scoreList.forEach(s => {
     document.querySelector('#score').innerHTML += `
-      <tr class="${s.playerId == connection.connectionId ? 'score-current-player ' : ''}">
-        <td>${s.playerId}</td>
+      <tr class="${s.snakeId == connection.connectionId ? 'score-current-player ' : ''}">
+        <td>${s.snakeId}</td>
         <td>${s.points}</td>
       </tr>
     `

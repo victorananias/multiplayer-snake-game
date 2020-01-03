@@ -70,7 +70,7 @@ namespace MultiplayerSnakeGame.Hubs
 
         public async override Task OnDisconnectedAsync(Exception exception)
         {
-            _gamesService.RemoveSnake(Context.ConnectionId);
+            _gamesService.KillSnakeById(Context.ConnectionId);
             Console.WriteLine($"Id {Context.ConnectionId} connected.");
         }
     }

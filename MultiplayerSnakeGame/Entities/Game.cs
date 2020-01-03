@@ -28,6 +28,19 @@ namespace MultiplayerSnakeGame.Entities
             PlayersLimit = 2;
         }
 
+        public void Run()
+        {
+            if (!Snakes.Any())
+            {
+                return;
+            }
+
+            Snakes.ForEach(snake => {
+                snake.Update();
+                _collisorService.Check(snake);
+            });
+        }
+
         public Snake CreateSnake(string snakeId)
         {
             var random = new Random();
@@ -42,9 +55,11 @@ namespace MultiplayerSnakeGame.Entities
             var snake = new Snake(snakeId, Id, x, y);
 
             Snakes.Add(snake);
+            _collisorService.AddCollidable(snake);
+
             ScoreList.Add(new Score
             {
-                PlayerId = snakeId
+                SnakeId = snakeId
             });
 
             return snake;
@@ -55,8 +70,10 @@ namespace MultiplayerSnakeGame.Entities
             var random = new Random();
             var x = random.Next(500 - 20) / 20 * 20;
             var y = random.Next(500 - 20) / 20 * 20;
+            var fruit = new Fruit(x, y);
 
-            Fruits.Add(new Fruit(x, y));
+            Fruits.Add(fruit);
+            _collisorService.AddCollidable(fruit);
         }
 
         private void OnCollision(object collisorService, CollisionEventArgs args)
@@ -68,33 +85,27 @@ namespace MultiplayerSnakeGame.Entities
             {
                 var snake = collidables.FirstOrDefault(c => c.GetType() == typeof(Snake));
 
-                PointTo(snake?.Id);
-                RemoveFruit(fruit?.Id);
-                GenerateFruit();
+                RemoveFruitById(fruit?.Id);
+                // PointTo(snake?.Id);
+                // GenerateFruit();
                 return;
             }
 
-            var collided1 = CollidedToOponent(collidables[0], collidables[1]);
-            var collided2 = CollidedToOponent(collidables[1], collidables[0]);
+            // var collided1 = CollidedTo(collidables[0], collidables[1]);
+            // var collided2 = CollidedTo(collidables[1], collidables[0]);
 
-            if (collided1)
-            {
-                ((Snake) collidables[0]).Die();
-            }
+            // if (collided1)
+            // {
+            //     ((Snake) collidables[0]).Die();
+            // }
 
-            if (collided2)
-            {
-                ((Snake) collidables[1]).Die();
-            }
+            // if (collided2)
+            // {
+            //     ((Snake) collidables[1]).Die();
+            // }
         }
 
-        public void RemoveSnakeById(string snakeId)
-        {
-            var snake = GetSnakeById(snakeId);
-            RemoveSnake(snake.Id);
-        }
-
-        private bool CollidedToOponent(ICollidable collidable1, ICollidable collidable2)
+        private bool CollidedTo(ICollidable collidable1, ICollidable collidable2)
         {
             var hitbox1 = collidable1.Hitboxes.First();
 
@@ -111,16 +122,11 @@ namespace MultiplayerSnakeGame.Entities
             return collided.Any();
         }
 
-        public void RemoveSnake(string id)
+        public void RemoveFruitById(string id)
         {
-            Snakes.Remove(GetSnakeById(id));
-            var snakeScore = ScoreList.FirstOrDefault(s => s.PlayerId == id);
-            ScoreList.Remove(snakeScore);
-        }
-
-        public void RemoveFruit(string id)
-        {
-            Fruits.Remove(GetFruitById(id));
+            var fruit = GetFruitById(id);
+            Fruits.Remove(fruit);
+            // _collisorService.RemoveCollidable(fruit);
         }
 
         public void MoveSnake(string connectionId, string direction)
@@ -135,13 +141,13 @@ namespace MultiplayerSnakeGame.Entities
 
         private void PointTo(string id)
         {
-            var score = ScoreList.FirstOrDefault(s => s.PlayerId == id);
+            var score = ScoreList.FirstOrDefault(s => s.SnakeId == id);
 
             if (score == null)
             {
                 ScoreList.Add(new Score
                 {
-                    PlayerId = id,
+                    SnakeId = id,
                     Points = 10
                 });
 
@@ -161,20 +167,6 @@ namespace MultiplayerSnakeGame.Entities
         private Fruit GetFruitById(string id)
         {
             return Fruits.Find(s => s.Id == id);
-        }
-
-        public void Run()
-        {
-            Snakes.ForEach(snake => snake.Update());
-
-            var collidables = new List<ICollidable>();
-
-            if (!Snakes.Any()) return;
-
-            collidables.AddRange(Snakes);
-            collidables.AddRange(Fruits);
-
-            _collisorService.setCollidables(collidables).Check();
         }
     }
 }

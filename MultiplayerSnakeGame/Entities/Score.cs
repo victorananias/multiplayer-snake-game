@@ -2,7 +2,7 @@
 {
     public class Score
     {
-        public string PlayerId { get; set; }
+        public string SnakeId { get; set; }
         public int Points { get; set; }
     }
 }
