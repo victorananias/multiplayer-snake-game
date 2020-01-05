@@ -4,40 +4,59 @@ using MultiplayerSnakeGame.Interfaces;
 
 namespace MultiplayerSnakeGame.Entities
 {
-    public class Fruit: ICollidable
+    public class Fruit : ICollidable
     {
-        public Fruit()
+        public string Id { get; set; }
+        private Game _game;
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int Size { get; set; }
+        public List<Hitbox> Hitboxes { 
+            get
+            {
+                return new List<Hitbox>
+                {
+                    new Hitbox
+                    {
+                        X = X,
+                        Y = Y,
+                        Width = 20,
+                        Height = 20
+                    }
+                };
+            }
+    }
+
+
+        public Fruit(Game game)
         {
             Size = 20;
             Id = Guid.NewGuid().ToString();
+            _game = game;
         }
 
-        public Fruit(int x, int y)
+        public Fruit(int x, int y, Game game)
         {
             Size = 20;
             Id = Guid.NewGuid().ToString();
             X = x;
             Y = y;
+            _game = game;
         }
 
-        public string Id { get; set; }
-        public void CollidedTo(ICollidable collidable)
+        public ICollidable Next()
+        {
+            return this;
+        }
+
+        public void WillCollideTo(ICollidable collidable)
         {
         }
 
-        public int X { get; set; }
-        public int Y { get; set; }
-        public int Size { get; set; }
-        public List<Hitbox> Hitboxes =>
-            new List<Hitbox>()
-            {
-                new Hitbox
-                {
-                    X = this.X,
-                    Y = this.Y,
-                    Width = 20,
-                    Height = 20
-                }
-            };
+        public void WillBeHittedBy(ICollidable collidable)
+        {
+            _game.RemoveFruit(this);
+            _game.GenerateFruit();
+        }
     }
 }

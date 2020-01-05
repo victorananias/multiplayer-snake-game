@@ -51,6 +51,7 @@ namespace MultiplayerSnakeGame.Services
 
         public async Task RunGames()
         {
+            Console.WriteLine(_context.Games.Count);
             foreach (var game in _context.Games)
             {
                 game.Run();
@@ -66,26 +67,26 @@ namespace MultiplayerSnakeGame.Services
 
         public void MoveOrBoost(string snakeId, string direction)
         {
-            var player = _context.GetSnakeById(snakeId);
+            var snake = _context.GetSnakeById(snakeId);
 
-            if (player == null) 
+            if (snake == null) 
             {
                 return;
             }
 
-            GetGameById(player.GameId)?.MoveSnake(snakeId, direction);
+            snake?.Move(direction);
         }
 
         public void StopSnakeBoost(string snakeId)
         {
-            var player = _context.GetSnakeById(snakeId);
+            var snake = _context.GetSnakeById(snakeId);
 
-            if (player == null) 
+            if (snake == null) 
             {
                 return;
             }
 
-            GetGameById(player.GameId)?.ReduceSnakeSpeed(snakeId);
+            snake?.ReduceSpeed();
         }
 
         private Game GetGameById(string gameId)

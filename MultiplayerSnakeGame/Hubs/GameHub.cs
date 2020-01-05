@@ -20,8 +20,9 @@ namespace MultiplayerSnakeGame.Hubs
         public void JoinGame(string gameId = null)
         {
             Console.WriteLine($"Player {Context.ConnectionId} joined game \"{gameId}\"");
+            
             _gamesService.AddSnake(gameId, Context.ConnectionId);
-
+            
             Groups.AddToGroupAsync(Context.ConnectionId, groupName: gameId);
         }
 
@@ -29,25 +30,21 @@ namespace MultiplayerSnakeGame.Hubs
         {
             var direction = "";
 
-            if (key == "d")
+            switch (key)
             {
-                direction = "right";
-            }
-            else if (key == "a")
-            {
-                direction = "left";
-            }
-            else if (key == "w")
-            {
-                direction = "up";
-            }
-            else if (key == "s")
-            {
-                direction = "down";
-            }
-            else if (key == " ")
-            {
-                direction = "";
+                case "d":
+                    direction = "right";
+                    break;
+                case "a":
+                    direction = "left";
+                    break;
+            
+                case "w":
+                    direction = "up";
+                    break;
+                case "s":
+                    direction = "down";
+                    break;
             }
 
             // if (string.IsNullOrEmpty(direction)) 

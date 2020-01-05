@@ -7,7 +7,8 @@ namespace MultiplayerSnakeGame.Interfaces
     {
         List<Hitbox> Hitboxes { get; }
         string Id { get; set; }
-
-        void CollidedTo(ICollidable collidable);
-    }
+        void WillCollideTo(ICollidable collidable);
+        void WillBeHittedBy(ICollidable collidable);
+        ICollidable Next();
+  }
 }

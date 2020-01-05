@@ -7,12 +7,12 @@ namespace MultiplayerSnakeGame.Entities
 {
     public class Snake: ICollidable
     {
-        public Snake(string id, string gameId, int x, int y)
+        public Snake(string id, int x, int y, Game game)
         {
             Id = id;
-            GameId = gameId;
             Head = new SnakePiece(x, y);
             Body = new List<SnakePiece>();
+            _game = game;
             LastUpdate = DateTime.Now;
             Direction = "";
             DefaultUpdateTime = 300;
@@ -23,7 +23,6 @@ namespace MultiplayerSnakeGame.Entities
         public int DefaultUpdateTime { get; set; }
         public int CurrentUpdateTime { get; set; }
         public string Id { get; set; }
-        public string GameId { get; set; }
         public SnakePiece Head { get; set; }
         public List<SnakePiece> Body { get; set; }
         public DateTime LastUpdate { get; set; }
@@ -37,6 +36,8 @@ namespace MultiplayerSnakeGame.Entities
             }
         }
         public bool Alive { get; set; }
+        public bool ShouldGrow { get; set; }
+        private Game _game;
 
         public void Move(string direction)
         {
@@ -59,14 +60,19 @@ namespace MultiplayerSnakeGame.Entities
             CurrentUpdateTime = DefaultUpdateTime;
         }
 
-        public void CollidedTo(ICollidable collidable)
+        public ICollidable Next()
         {
-            if (collidable.GetType() == typeof(Fruit))
+            var updatedSnake = new Snake(Id, Head.X, Head.Y, null)
             {
-                Grow();
-            }
-        }
+                Body = Body.Select(b => new SnakePiece(b.X, b.Y)).ToList(),
+                LastUpdate = DateTime.Now.AddMinutes(-1),
+                Direction = Direction
+            };
 
+            updatedSnake.Update();
+
+            return updatedSnake;
+        }
 
         public void Update()
         {
@@ -78,6 +84,11 @@ namespace MultiplayerSnakeGame.Entities
             if (!ShouldUpdate())
             {
                 return;
+            }
+
+            if (ShouldGrow)
+            {
+                Grow();
             }
 
             var y = Head.Y;
@@ -149,7 +160,7 @@ namespace MultiplayerSnakeGame.Entities
             Alive = false;
         }
 
-        private void Grow()
+        public void Grow()
         {
             Body.Add(new SnakePiece(-200,-200));
         }
@@ -167,5 +178,23 @@ namespace MultiplayerSnakeGame.Entities
 
             return true;
         }
+
+    public void WillCollideTo(ICollidable collidable)
+    {
+        if (collidable.GetType() == typeof(Snake))
+        {
+            Die();
+        }
+
+        if (collidable.GetType() == typeof(Fruit))
+        {
+            Grow();
+            _game.PointTo(this);
+        }
     }
+
+    public void WillBeHittedBy(ICollidable collidable)
+    {
+    }
+  }
 }
