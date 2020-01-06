@@ -15,7 +15,7 @@ class Snake {
 
         for (let i = 0; i < this.body.length; i++) {
             const piece = this.body[i]
-            this.context.fillStyle = this.bodyColor
+            this.context.fillStyle = this.color
             this.context.fillRect(piece.x, piece.y, piece.size, piece.size)
         }
     }

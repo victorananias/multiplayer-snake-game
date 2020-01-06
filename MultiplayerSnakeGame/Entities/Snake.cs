@@ -5,7 +5,7 @@ using MultiplayerSnakeGame.Interfaces;
 
 namespace MultiplayerSnakeGame.Entities
 {
-    public class Snake: ICollidable
+    public class Snake : ICollidable
     {
         public Snake(string id, int x, int y, Game game)
         {
@@ -27,14 +27,17 @@ namespace MultiplayerSnakeGame.Entities
         public List<SnakePiece> Body { get; set; }
         public DateTime LastUpdate { get; set; }
         public string Direction { get; set; }
+
         public List<Hitbox> Hitboxes
         {
-            get {
-                var hitboxes = new List<Hitbox>() { Head.Hitbox };
+            get
+            {
+                var hitboxes = new List<Hitbox>() {Head.Hitbox};
                 hitboxes.AddRange(Body.Select(p => p.Hitbox).ToList());
                 return hitboxes;
             }
         }
+
         public bool Alive { get; set; }
         public bool ShouldGrow { get; set; }
         private Game _game;
@@ -70,17 +73,12 @@ namespace MultiplayerSnakeGame.Entities
             };
 
             updatedSnake.Update();
-            
+
             return updatedSnake;
         }
 
         public void Update()
         {
-            if (!Alive)
-            {
-                return;
-            }
-            
             if (ShouldGrow)
             {
                 Grow();
@@ -105,6 +103,7 @@ namespace MultiplayerSnakeGame.Entities
                     {
                         x = 0;
                     }
+
                     break;
 
                 case "down":
@@ -113,6 +112,7 @@ namespace MultiplayerSnakeGame.Entities
                     {
                         y = 0;
                     }
+
                     break;
 
                 case "left":
@@ -121,6 +121,7 @@ namespace MultiplayerSnakeGame.Entities
                     {
                         x = 500 - 20;
                     }
+
                     break;
                 default:
                     return;
@@ -148,7 +149,7 @@ namespace MultiplayerSnakeGame.Entities
                 x = oldX;
                 y = oldY;
             }
-            
+
             LastUpdate = DateTime.Now;
         }
 
@@ -159,7 +160,7 @@ namespace MultiplayerSnakeGame.Entities
 
         public void Grow()
         {
-            Body.Add(new SnakePiece(-200,-200));
+            Body.Add(new SnakePiece(-200, -200));
         }
 
         public bool ShouldUpdate()
@@ -167,22 +168,22 @@ namespace MultiplayerSnakeGame.Entities
             return !(DateTime.Now.Subtract(LastUpdate).TotalMilliseconds <= CurrentUpdateTime);
         }
 
-    public void WillCollideTo(ICollidable collidable)
-    {
-        if (collidable.GetType() == typeof(Snake))
+        public void WillCollideTo(ICollidable collidable)
         {
-            Die();
+            if (collidable.GetType() == typeof(Snake))
+            {
+                Die();
+            }
+
+            if (collidable.GetType() == typeof(Fruit))
+            {
+                Grow();
+                _game.PointTo(this);
+            }
         }
 
-        if (collidable.GetType() == typeof(Fruit))
+        public void WillBeHittedBy(ICollidable collidable)
         {
-            Grow();
-            _game.PointTo(this);
         }
     }
-
-    public void WillBeHittedBy(ICollidable collidable)
-    {
-    }
-  }
 }

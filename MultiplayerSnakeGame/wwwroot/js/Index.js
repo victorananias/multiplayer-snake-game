@@ -7,7 +7,7 @@ const context = canvas.getContext('2d')
 const background = new Background(context)
 const keyboard = new Keyboard()
 
-const connection = new signalR.HubConnectionBuilder().withUrl("https://localhost:5001/gamehub").build()
+const connection = new signalR.HubConnectionBuilder().withUrl("gamehub").build()
 
 let scoreList = [];
 
@@ -25,11 +25,6 @@ connection.on("Update", (data) => {
 
     data.snakes.forEach(s => {
         const snake = new Snake(s, context, snakeColor(s, connection.connectionId))
-
-        if (snake.id !== connection.connectionId) {
-            snake.color = 'yellow'
-        }
-
         snake.draw()
     })
 

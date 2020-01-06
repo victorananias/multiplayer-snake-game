@@ -37,20 +37,14 @@ namespace MultiplayerSnakeGame.Entities
             var collidables = new List<ICollidable>(Snakes);
             collidables.AddRange(Fruits);
 
-            foreach (var snake in Snakes)
+            foreach (var snake in Snakes.Where(snake => snake.Alive && snake.ShouldUpdate()))
             {
-                if (snake.ShouldUpdate())
-                {
-                    _collisorService.Check(snake, collidables);
-                }
+                _collisorService.Check(snake, collidables);
             }
 
-            foreach (var snake in Snakes)
+            foreach (var snake in Snakes.Where(snake => snake.Alive && snake.ShouldUpdate()))
             {
-                if (snake.ShouldUpdate())
-                {
-                    snake.Update();
-                }
+                snake.Update();
             }
         }
 
@@ -95,6 +89,11 @@ namespace MultiplayerSnakeGame.Entities
         public void PointTo(Snake snake)
         {
             ScoreList.First(s => s.SnakeId == snake.Id).Points += 10;
+        }
+
+        public bool HasNoPlayersAlive()
+        {
+            return Snakes.Count > 0 && !Snakes.Any(s => s.Alive);
         }
     }
 }

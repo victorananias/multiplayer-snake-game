@@ -47,10 +47,10 @@ namespace MultiplayerSnakeGame.Hubs
                     break;
             }
 
-            // if (string.IsNullOrEmpty(direction)) 
-            // {
-            //     return;
-            // }
+            if (string.IsNullOrEmpty(direction)) 
+            {
+                return;
+            }
 
             _gamesService.MoveOrBoost(Context.ConnectionId, direction);
         }
@@ -67,7 +67,7 @@ namespace MultiplayerSnakeGame.Hubs
 
         public async override Task OnDisconnectedAsync(Exception exception)
         {
-            _gamesService.KillSnakeById(Context.ConnectionId);
+            _gamesService.DisconnectPlayer(Context.ConnectionId);
             Console.WriteLine($"Id {Context.ConnectionId} connected.");
         }
     }

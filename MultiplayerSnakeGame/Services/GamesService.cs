@@ -51,41 +51,41 @@ namespace MultiplayerSnakeGame.Services
 
         public async Task RunGames()
         {
+            var gamesToRemove = new List<Game>();
+            
             foreach (var game in _context.Games)
             {
+                if (game.HasNoPlayersAlive())
+                {
+                    Console.WriteLine($"{game.Id} will be removed.");
+                    gamesToRemove.Add(game);
+                    continue;
+                }
+                
                 game.Run();
+                
                 await _hub.Clients.Groups(game.Id).SendAsync("Update", game);
+            }
+
+            foreach (var game in gamesToRemove)
+            {
+                _context.RemoveGame(game);
             }
         }
 
-        public void KillSnakeById(string snakeId)
+        public void DisconnectPlayer(string snakeId)
         {
-            var snake = _context.GetSnakeById(snakeId);
-            snake.Die();
+            _context.GetSnakeById(snakeId)?.Die();
         }
 
         public void MoveOrBoost(string snakeId, string direction)
         {
-            var snake = _context.GetSnakeById(snakeId);
-
-            if (snake == null) 
-            {
-                return;
-            }
-
-            snake?.Move(direction);
+            _context.GetSnakeById(snakeId)?.Move(direction);
         }
 
         public void StopSnakeBoost(string snakeId)
         {
-            var snake = _context.GetSnakeById(snakeId);
-
-            if (snake == null) 
-            {
-                return;
-            }
-
-            snake?.ReduceSpeed();
+            _context.GetSnakeById(snakeId)?.ReduceSpeed();
         }
 
         private Game GetGameById(string gameId)

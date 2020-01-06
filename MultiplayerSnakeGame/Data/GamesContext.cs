@@ -21,5 +21,11 @@ namespace MultiplayerSnakeGame.Data
         {
             return Snakes.FirstOrDefault(s => s.Id == snakeId);
         }
+
+        public void RemoveGame(Game game)
+        {
+            game.Snakes.ForEach(snake => Snakes.Remove(snake));
+            Games.Remove(game);
+        }
     }
 }
