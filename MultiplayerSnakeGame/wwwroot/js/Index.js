@@ -24,7 +24,7 @@ connection.on("Update", (data) => {
     background.draw()
 
     data.snakes.forEach(s => {
-        const snake = new Snake(s, context)
+        const snake = new Snake(s, context, snakeColor(s, connection.connectionId))
 
         if (snake.id !== connection.connectionId) {
             snake.color = 'yellow'
@@ -74,4 +74,18 @@ function updateScore() {
       </tr>
     `
     })
+}
+
+function snakeColor(snake, playerId) {
+    const deadColor = 'grey'
+    const playerColor = '#4bb84b'
+    const enemyColor = 'yellow'
+
+    if (!snake.alive) {
+        return deadColor
+    } else if (!playerId) {
+        return playerColor
+    } else {
+        return snake.id == playerId ? playerColor : enemyColor
+    }
 }
