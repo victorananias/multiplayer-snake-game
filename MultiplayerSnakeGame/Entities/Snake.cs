@@ -70,7 +70,7 @@ namespace MultiplayerSnakeGame.Entities
             };
 
             updatedSnake.Update();
-
+            
             return updatedSnake;
         }
 
@@ -80,12 +80,7 @@ namespace MultiplayerSnakeGame.Entities
             {
                 return;
             }
-
-            if (!ShouldUpdate())
-            {
-                return;
-            }
-
+            
             if (ShouldGrow)
             {
                 Grow();
@@ -153,6 +148,8 @@ namespace MultiplayerSnakeGame.Entities
                 x = oldX;
                 y = oldY;
             }
+            
+            LastUpdate = DateTime.Now;
         }
 
         public void Die()
@@ -165,18 +162,9 @@ namespace MultiplayerSnakeGame.Entities
             Body.Add(new SnakePiece(-200,-200));
         }
 
-        private bool ShouldUpdate()
+        public bool ShouldUpdate()
         {
-            var now = DateTime.Now;
-      
-            if (now.Subtract(LastUpdate).TotalMilliseconds <= CurrentUpdateTime)
-            {
-                return false;
-            }
-
-            LastUpdate = now;
-
-            return true;
+            return !(DateTime.Now.Subtract(LastUpdate).TotalMilliseconds <= CurrentUpdateTime);
         }
 
     public void WillCollideTo(ICollidable collidable)

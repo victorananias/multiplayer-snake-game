@@ -51,7 +51,6 @@ namespace MultiplayerSnakeGame.Services
 
         public async Task RunGames()
         {
-            Console.WriteLine(_context.Games.Count);
             foreach (var game in _context.Games)
             {
                 game.Run();

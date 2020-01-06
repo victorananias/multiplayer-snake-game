@@ -39,12 +39,18 @@ namespace MultiplayerSnakeGame.Entities
 
             foreach (var snake in Snakes)
             {
-                _collisorService.Check(snake, collidables);
+                if (snake.ShouldUpdate())
+                {
+                    _collisorService.Check(snake, collidables);
+                }
             }
 
             foreach (var snake in Snakes)
             {
-                snake.Update();
+                if (snake.ShouldUpdate())
+                {
+                    snake.Update();
+                }
             }
         }
 

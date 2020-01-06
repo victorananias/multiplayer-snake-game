@@ -11,7 +11,9 @@ namespace MultiplayerSnakeGame.Entities
         public int X { get; set; }
         public int Y { get; set; }
         public int Size { get; set; }
-        public List<Hitbox> Hitboxes { 
+
+        public List<Hitbox> Hitboxes
+        {
             get
             {
                 return new List<Hitbox>
@@ -25,7 +27,7 @@ namespace MultiplayerSnakeGame.Entities
                     }
                 };
             }
-    }
+        }
 
 
         public Fruit(Game game)
