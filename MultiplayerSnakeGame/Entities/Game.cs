@@ -24,7 +24,7 @@ namespace MultiplayerSnakeGame.Entities
             Snakes = new List<Snake>();
             Fruits = new List<Fruit>();
             ScoreList = new List<Score>();
-            _playersLimit = 2;
+            _playersLimit = 5;
         }
 
         public void Run()
