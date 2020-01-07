@@ -9,7 +9,7 @@ const keyboard = new Keyboard()
 
 const connection = new signalR.HubConnectionBuilder().withUrl("gamehub").build()
 
-let scoreList = [];
+let scores = [];
 
 connection.start()
     .then(() => {
@@ -18,23 +18,23 @@ connection.start()
     })
     .catch(err => console.error(err.toString()))
 
-connection.on("Update", (data) => {
+connection.on("Update", ({fruits, snakes, scoreList }) => {
     context.clearRect(0, 0, 500, 500)
 
     background.draw()
 
-    data.snakes.forEach(s => {
+    snakes.forEach(s => {
         const snake = new Snake(s, context, snakeColor(s, connection.connectionId))
         snake.draw()
     })
 
-    data.fruits.forEach(f => {
+    fruits.forEach(f => {
         const fruit = new Fruit(f, context)
         fruit.draw()
     })
 
-    if (JSON.stringify(scoreList) !== JSON.stringify(data.scoreList)) {
-        scoreList = data.scoreList
+    if (JSON.stringify(scores) !== JSON.stringify(scoreList)) {
+        scores = scoreList
         updateScore()
     }
 })
@@ -61,13 +61,13 @@ function joinGame() {
 function updateScore() {
     [...document.querySelectorAll('#score tbody tr')].forEach(e => e.remove())
 
-    scoreList.forEach(s => {
+    scores.forEach(s => {
         document.querySelector('#score').innerHTML += `
-      <tr class="${s.snakeId === connection.connectionId ? 'score-current-player ' : ''}">
-        <td>${s.snakeId}</td>
-        <td>${s.points}</td>
-      </tr>
-    `
+            <tr class="${s.snakeId === connection.connectionId ? 'score-current-player ' : ''}">
+                <td>${s.snakeId}</td>
+                <td>${s.points}</td>
+            </tr>
+        `
     })
 }
 
@@ -81,6 +81,6 @@ function snakeColor(snake, playerId) {
     } else if (!playerId) {
         return playerColor
     } else {
-        return snake.id == playerId ? playerColor : enemyColor
+        return snake.id === playerId ? playerColor : enemyColor
     }
 }
