@@ -46,6 +46,16 @@ namespace MultiplayerSnakeGame.Entities
             {
                 snake.Update();
             }
+
+            if (Snakes.Count > 1)
+            {
+                if (Fruits.Count < Snakes.Count - 1)
+                {
+                    GenerateFruit();
+                }
+            }
+            
+            ScoreList = ScoreList.OrderByDescending(s => s.Points).ToList();
         }
 
         public Snake CreateSnake(string snakeId)

@@ -25,17 +25,12 @@ namespace MultiplayerSnakeGame.Services
 
         public void AddSnake(string gameId, string snakeId)
         {
-            if (string.IsNullOrWhiteSpace(gameId))
-            {
-                return;
-            }
-
             var game = GetGameById(gameId);
 
             if (game == null)
             {
                 game = new Game(gameId);
-                _context.Games.Add(game);
+                _context.AddGame(game);
             }
 
             var snake = game.CreateSnake(snakeId);
@@ -45,8 +40,7 @@ namespace MultiplayerSnakeGame.Services
                 return;
             }
 
-            game.GenerateFruit();
-            _context.Snakes.Add(snake);
+            _context.AddSnake(snake);
         }
 
         public async Task RunGames()
@@ -57,7 +51,6 @@ namespace MultiplayerSnakeGame.Services
             {
                 if (game.HasNoPlayersAlive())
                 {
-                    Console.WriteLine($"{game.Id} will be removed.");
                     gamesToRemove.Add(game);
                     continue;
                 }

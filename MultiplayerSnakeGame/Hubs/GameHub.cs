@@ -17,9 +17,12 @@ namespace MultiplayerSnakeGame.Hubs
             _gamesService = gamesService;
         }
 
-        public void JoinGame(string gameId = null)
+        public void JoinGame(string gameId)
         {
-            Console.WriteLine($"Player {Context.ConnectionId} joined game \"{gameId}\"");
+            if (string.IsNullOrWhiteSpace(gameId))
+            {
+                return;
+            }
             
             _gamesService.AddSnake(gameId, Context.ConnectionId);
             

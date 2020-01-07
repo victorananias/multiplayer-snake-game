@@ -58,7 +58,6 @@ namespace MultiplayerSnakeGame.Entities
         public void WillBeHittedBy(ICollidable collidable)
         {
             _game.RemoveFruit(this);
-            _game.GenerateFruit();
         }
     }
 }
