@@ -170,12 +170,12 @@ namespace MultiplayerSnakeGame.Entities
 
         public void WillCollideTo(ICollidable collidable)
         {
-            if (collidable.GetType() == typeof(Snake))
+            if (collidable is Snake)
             {
                 Die();
             }
 
-            if (collidable.GetType() == typeof(Fruit))
+            if (collidable is Fruit)
             {
                 Grow();
                 _game.PointTo(this);
