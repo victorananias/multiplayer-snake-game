@@ -40,6 +40,8 @@ namespace MultiplayerSnakeGame.Entities
 
         public bool Alive { get; set; }
         public bool ShouldGrow { get; set; }
+        public bool Win { get; set; }
+
         private Game _game;
 
         public void Move(string direction)
@@ -175,6 +177,7 @@ namespace MultiplayerSnakeGame.Entities
                 Die();
             }
 
+            
             if (collidable is Fruit)
             {
                 Grow();

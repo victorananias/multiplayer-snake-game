@@ -39,6 +39,14 @@ connection.on("Update", (data) => {
     }
 })
 
+connection.on("Win", () => {
+    alert("win")
+})
+
+connection.on("Lose", () => {
+    alert("lose")
+})
+
 KEYS.forEach(key => {
     keyboard.onPress(key, () => keyPressed(key))
     keyboard.onRelease(key, () => keyReleased(key))

@@ -54,6 +54,15 @@ namespace MultiplayerSnakeGame.Services
                     gamesToRemove.Add(game);
                     continue;
                 }
+
+                if (game.Over)
+                {
+                    var winner = game.Winner;
+                    await _hub.Clients.Client(winner.Id).SendAsync("Win");
+                    await _hub.Groups.RemoveFromGroupAsync(winner.Id, game.Id);
+                    await _hub.Clients.Groups(game.Id).SendAsync("Lose");
+                    gamesToRemove.Add(game);
+                }
                 
                 game.Run();
                 

@@ -12,8 +12,13 @@ namespace MultiplayerSnakeGame.Entities
         public List<Snake> Snakes { get; set; }
         public List<Fruit> Fruits { get; set; }
         public List<Score> ScoreList { get; set; }
-        private readonly int _playersLimit;
 
+        public bool Over { get; set; }
+        public int PointsToWin { get; }
+
+        public Snake Winner => Snakes.FirstOrDefault(s => s.Win);
+
+        private readonly int _playersLimit;
         private readonly CollisorService _collisorService;
 
         public Game(string gameId)
@@ -21,6 +26,7 @@ namespace MultiplayerSnakeGame.Entities
             _collisorService = new CollisorService();
 
             Id = gameId;
+            PointsToWin = 100;
             Snakes = new List<Snake>();
             Fruits = new List<Fruit>();
             ScoreList = new List<Score>();
@@ -98,7 +104,19 @@ namespace MultiplayerSnakeGame.Entities
 
         public void PointTo(Snake snake)
         {
-            ScoreList.First(s => s.SnakeId == snake.Id).Points += 10;
+            var score = ScoreList.First(s => s.SnakeId == snake.Id);
+            score.Points += 10;
+
+            if (score.Points == PointsToWin)
+            {
+                WinTo(snake);
+            }
+        }
+
+        private void WinTo(Snake snake)
+        {
+            Over = true;
+            snake.Win = true;
         }
 
         public bool HasNoPlayersAlive()
