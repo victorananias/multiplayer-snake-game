@@ -40,11 +40,21 @@ connection.on("Update", (data) => {
 })
 
 connection.on("Win", () => {
-    alert("win")
+    const gameOverElement = document.querySelector('.game-over')
+    const gameOverTextElement = document.querySelector('.game-over')
+    gameOverElement.style.display = 'block'
+    gameOverElement.style.animationPlayState = 'running'
+    gameOverTextElement.classList.add('text-winner')
+    gameOverTextElement.textContent = 'You Win'
 })
 
 connection.on("Lose", () => {
-    alert("lose")
+    const gameOverElement = document.querySelector('.game-over')
+    const gameOverTextElement = document.querySelector('.game-over')
+    gameOverElement.style.display = 'block'
+    gameOverElement.style.animationPlayState = 'running'
+    gameOverTextElement.classList.add('text-loser')
+    gameOverTextElement.textContent = 'You Lose'
 })
 
 KEYS.forEach(key => {

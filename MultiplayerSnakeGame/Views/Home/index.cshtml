@@ -20,26 +20,67 @@
 </head>
 
 <body>
-    <div class="flex-center">
-        <div class="game-container">
-            <canvas id="game" width="500" height="500"></canvas>
-        </div>
-
-        <div class="info-container">
-            <table id="score">
-                <thead>
-                    <tr>
-                        <th colspan="2">
-                            Scores
-                        </th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
+<div class="flex-center">
+    <div class="game-container">
+        <canvas id="game" width="500" height="500"></canvas>
     </div>
 
-    <script src="~/node_modules/@@microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <div class="info-container">
+        <table id="score">
+            <thead>
+            <tr>
+                <th colspan="2">
+                    Scores
+                </th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<div class="game-over">
+    <span class="game-over-text"></span>
+</div>
+
+<style>
+    .game-over {
+        position: fixed;
+        width: 100%; 
+        height: 100%; 
+        left: 0; 
+        top: 0; 
+        background-color: #000;
+        text-align: center;
+        animation: opacity-animation 1s;
+        animation-play-state: paused;
+        display: none;
+        opacity: 0.6;
+    }
+    
+    .text-winner {
+        color: green; 
+        font-size: 5rem; 
+        line-height: 90vh;
+    }
+    
+    .text-loser {
+        color: red; 
+        font-size: 5rem; 
+        line-height: 90vh;
+    }
+    
+    @@keyframes opacity-animation {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 0.6;
+        }
+    }
+</style>
+
+<script src="~/node_modules/@@microsoft/signalr/dist/browser/signalr.min.js"></script>
     <script src="~/js/Keyboard.js"></script>
     <script src="~/js/Background.js"></script>
     <script src="~/js/Fruit.js"></script>
