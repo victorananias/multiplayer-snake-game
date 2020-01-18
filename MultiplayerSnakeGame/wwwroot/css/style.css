@@ -86,6 +86,11 @@ table td:last-child {
     line-height: 90vh;
 }
 
+.controllers-info {
+    color: white;
+    margin-top: 10px;
+}
+
 @keyframes opacity-animation {
     from {
         opacity: 0;
