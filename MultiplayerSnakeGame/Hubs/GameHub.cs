@@ -11,10 +11,12 @@ namespace MultiplayerSnakeGame.Hubs
     public class GameHub : Hub
     {
         private GamesService _gamesService;
+        private KeyboardService _keyboardService;
 
-        public GameHub(GamesService gamesService)
+        public GameHub(GamesService gamesService, KeyboardService keyboardService)
         {
             _gamesService = gamesService;
+            _keyboardService = keyboardService;
         }
 
         public void JoinGame(string gameId)
@@ -31,36 +33,12 @@ namespace MultiplayerSnakeGame.Hubs
 
         public void KeyPressed(string key)
         {
-            var direction = "";
-
-            switch (key)
-            {
-                case "d":
-                    direction = "right";
-                    break;
-                case "a":
-                    direction = "left";
-                    break;
-            
-                case "w":
-                    direction = "up";
-                    break;
-                case "s":
-                    direction = "down";
-                    break;
-            }
-
-            if (string.IsNullOrEmpty(direction)) 
-            {
-                return;
-            }
-
-            _gamesService.MoveOrBoost(Context.ConnectionId, direction);
+            _keyboardService.Press(Context.ConnectionId, key);
         }
 
         public void KeyReleased(string key)
         {
-            _gamesService.StopSnakeBoost(Context.ConnectionId);
+            _keyboardService.Release(Context.ConnectionId, key);
         }
 
         public async override Task OnConnectedAsync()
