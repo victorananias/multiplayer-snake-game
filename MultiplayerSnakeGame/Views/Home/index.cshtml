@@ -15,35 +15,35 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/css/style.css">
     <script>
-        var gameId = "@Model.Id"
+        const gameId = "@Model.Id";
     </script>
 </head>
 
 <body>
-<div class="flex-center">
-    <div class="game-container">
-        <canvas id="game" width="500" height="500"></canvas>
+    <div class="flex-center">
+        <div class="game-container">
+            <canvas id="game" width="500" height="500"></canvas>
+        </div>
+
+        <div class="info-container">
+            <table id="score">
+                <thead>
+                <tr>
+                    <th colspan="2">
+                        Scores
+                    </th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
 
-    <div class="info-container">
-        <table id="score">
-            <thead>
-            <tr>
-                <th colspan="2">
-                    Scores
-                </th>
-            </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+    <div class="game-over">
+        <span class="game-over-text"></span>
     </div>
-</div>
 
-<div class="game-over">
-    <span class="game-over-text"></span>
-</div>
-
-<script src="~/node_modules/@@microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/node_modules/@@microsoft/signalr/dist/browser/signalr.min.js"></script>
     <script src="~/js/Keyboard.js"></script>
     <script src="~/js/Background.js"></script>
     <script src="~/js/Fruit.js"></script>
