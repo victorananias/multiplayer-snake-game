@@ -1,3 +1,4 @@
-# Snake Game
+# Multiplayer Snake Game
 
-Snake game made with HTML Canvas and JavaScript.
+Demo [here](https://dotnet-multiplayer-snake-game.herokuapp.com/)
+
