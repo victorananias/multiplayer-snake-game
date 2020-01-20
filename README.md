@@ -1,4 +1,7 @@
 # Multiplayer Snake Game
 
-Demo [here](https://dotnet-multiplayer-snake-game.herokuapp.com/)
+Game made with .NET Core, SignalR and pure JavaScript.
+
+
+Demo [here](https://dotnet-multiplayer-snake-game.herokuapp.com/).
 
