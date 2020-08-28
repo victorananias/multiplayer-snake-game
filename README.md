@@ -1,4 +1,4 @@
-# Snake Game Online
+# Multiplayer Snake Game
 
 Game made with .NET Core, SignalR and pure JavaScript.
 
