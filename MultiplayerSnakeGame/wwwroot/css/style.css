@@ -74,16 +74,25 @@ table td:last-child {
     opacity: 0.6;
 }
 
-.text-winner {
-    color: green;
+.game-over-text {
     font-size: 5rem;
     line-height: 90vh;
 }
 
-.text-loser {
+.game-over-text.win {
+    color: green;
+}
+
+.game-over-text.lose {
     color: red;
-    font-size: 5rem;
-    line-height: 90vh;
+}
+
+.display-block {
+    display: block;
+}
+
+.animation-running {
+    animation-play-state: running;
 }
 
 .control-info {

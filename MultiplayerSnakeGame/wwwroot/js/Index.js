@@ -1,5 +1,9 @@
 "use strict"
 
+const deadColor = 'grey'
+const playerColor = '#4bb84b'
+const enemyColor = 'yellow'
+
 const KEYS = ['w', 'a', 's', 'd', ' ']
 const canvas = document.querySelector('#game')
 const context = canvas.getContext('2d')
@@ -12,15 +16,11 @@ const connection = new signalR.HubConnectionBuilder().withUrl("gamehub").build()
 let scoreList = [];
 
 connection.start()
-    .then(() => {
-        console.log('connected')
-        joinGame()
-    })
+    .then(joinGame)
     .catch(err => console.error(err.toString()))
 
 connection.on("Update", (data) => {
     context.clearRect(0, 0, 500, 500)
-
     background.draw()
 
     data.snakes.forEach(s => {
@@ -40,20 +40,16 @@ connection.on("Update", (data) => {
 })
 
 connection.on("Win", () => {
-    const gameOverElement = document.querySelector('.game-over')
-    const gameOverTextElement = document.querySelector('.game-over')
-    gameOverElement.style.display = 'block'
-    gameOverElement.style.animationPlayState = 'running'
-    gameOverTextElement.classList.add('text-winner')
+    document.querySelector('.game-over').classList.add('display-block', 'animation-running')
+    const gameOverTextElement = document.querySelector('.game-over-text')
+    gameOverTextElement.classList.add('win')
     gameOverTextElement.textContent = 'You Win'
 })
 
 connection.on("Lose", () => {
-    const gameOverElement = document.querySelector('.game-over')
-    const gameOverTextElement = document.querySelector('.game-over')
-    gameOverElement.style.display = 'block'
-    gameOverElement.style.animationPlayState = 'running'
-    gameOverTextElement.classList.add('text-loser')
+    document.querySelector('.game-over').classList.add('display-block', 'animation-running')
+    const gameOverTextElement = document.querySelector('.game-over-text')
+    gameOverTextElement.classList.add('lose')
     gameOverTextElement.textContent = 'You Lose'
 })
 
@@ -72,7 +68,6 @@ function keyReleased(key) {
 
 function joinGame() {
     connection.invoke("JoinGame", gameId)
-        .then(() => console.log("joined game " + gameId))
         .catch(err => console.error(err.toString()))
 }
 
@@ -90,10 +85,6 @@ function updateScore() {
 }
 
 function snakeColor(snake, playerId) {
-    const deadColor = 'grey'
-    const playerColor = '#4bb84b'
-    const enemyColor = 'yellow'
-
     if (!snake.alive) {
         return deadColor
     } else if (!playerId) {
