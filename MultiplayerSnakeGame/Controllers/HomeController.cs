@@ -13,7 +13,6 @@ namespace MultiplayerSnakeGame.Controllers
         public IActionResult IndexWithoutGameId()
         {
             var gameId = Guid.NewGuid().ToString();
-
             return Redirect($"/{gameId}");
         }
 

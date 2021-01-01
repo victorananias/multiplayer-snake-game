@@ -41,15 +41,9 @@ namespace MultiplayerSnakeGame.Hubs
             _keyboardService.Release(Context.ConnectionId, key);
         }
 
-        public async override Task OnConnectedAsync()
-        {
-            Console.WriteLine($"Id {Context.ConnectionId} connected.");
-        }
-
         public async override Task OnDisconnectedAsync(Exception exception)
         {
             _gamesService.DisconnectPlayer(Context.ConnectionId);
-            Console.WriteLine($"Id {Context.ConnectionId} connected.");
         }
     }
 }
