@@ -1,5 +1,5 @@
 
-FROM microsoft/dotnet:3.1-sdk
+FROM microsoft/dotnet:5.0-sdk
 WORKDIR /app
 EXPOSE 80
 
