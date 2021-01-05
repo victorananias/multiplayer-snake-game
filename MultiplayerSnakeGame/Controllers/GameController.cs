@@ -7,7 +7,7 @@ using MultiplayerSnakeGame.ViewModels;
 
 namespace MultiplayerSnakeGame.Controllers
 {
-    public class HomeController : Controller
+    public class GameController : Controller
     {
         [HttpGet("")]
         public IActionResult IndexWithoutGameId()
