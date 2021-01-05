@@ -19,7 +19,7 @@ namespace MultiplayerSnakeGame.Controllers
         [HttpGet("{gameId}")]
         public IActionResult Index(string gameId)
         {
-            return View(new GameInfo
+            return View(new GameViewModel
             {
                 Id = gameId
             });

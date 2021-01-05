@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MultiplayerSnakeGame.ViewModels
 {
-    public class GameInfo
+    public class GameViewModel
     {
         public string Id { get; set; }
     }
