@@ -32,7 +32,7 @@ namespace MultiplayerSnakeGame.Entities
         {
             get
             {
-                var hitboxes = new List<Hitbox>() {Head.Hitbox};
+                var hitboxes = new List<Hitbox>() { Head.Hitbox };
                 hitboxes.AddRange(Body.Select(p => p.Hitbox).ToList());
                 return hitboxes;
             }
@@ -44,20 +44,23 @@ namespace MultiplayerSnakeGame.Entities
 
         private Game _game;
 
-        public void Move(string direction)
+        public void MoveOrBoost(string direction)
         {
-            if (
-                (direction == "up" && Direction == "down")
-                || (direction == "down" && Direction == "up")
-                || (direction == "right" && Direction == "left")
-                || (direction == "left" && Direction == "right")
-            )
+            if (IsCurrentDirectionOpositeToReceived(direction))
             {
                 return;
             }
 
             Direction = direction;
             CurrentUpdateTime = 100;
+        }
+
+        private bool IsCurrentDirectionOpositeToReceived(string direction)
+        {
+            return (direction == "up" && Direction == "down")
+                    || (direction == "down" && Direction == "up")
+                    || (direction == "right" && Direction == "left")
+                    || (direction == "left" && Direction == "right");
         }
 
         public void ReduceSpeed()
@@ -177,7 +180,7 @@ namespace MultiplayerSnakeGame.Entities
                 Die();
             }
 
-            
+
             if (collidable is Fruit)
             {
                 Grow();
@@ -187,6 +190,11 @@ namespace MultiplayerSnakeGame.Entities
 
         public void WillBeHittedBy(ICollidable collidable)
         {
+        }
+
+        public bool Is(ICollidable collidable)
+        {
+            return Id == collidable.Id;
         }
     }
 }

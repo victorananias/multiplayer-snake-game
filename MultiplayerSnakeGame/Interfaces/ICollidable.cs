@@ -10,5 +10,6 @@ namespace MultiplayerSnakeGame.Interfaces
         void WillCollideTo(ICollidable collidable);
         void WillBeHittedBy(ICollidable collidable);
         ICollidable Next();
-  }
+        bool Is(ICollidable collidable);
+    }
 }

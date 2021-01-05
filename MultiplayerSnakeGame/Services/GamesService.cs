@@ -13,6 +13,7 @@ namespace MultiplayerSnakeGame.Services
     {
         private IHubContext<GameHub> _hub;
         private GamesContext _context;
+        private List<Game> _gamesToRemove = new List<Game>();
 
         public GamesService(
             GamesContext context,
@@ -43,36 +44,10 @@ namespace MultiplayerSnakeGame.Services
             _context.AddSnake(snake);
         }
 
-        public async Task RunGames()
+        public async Task RunAsync()
         {
-            var gamesToRemove = new List<Game>();
-            
-            foreach (var game in _context.Games)
-            {
-                if (game.HasNoPlayersAlive())
-                {
-                    gamesToRemove.Add(game);
-                    continue;
-                }
-
-                if (game.Over)
-                {
-                    var winner = game.Winner;
-                    await _hub.Clients.Client(winner.Id).SendAsync("Win");
-                    await _hub.Groups.RemoveFromGroupAsync(winner.Id, game.Id);
-                    await _hub.Clients.Groups(game.Id).SendAsync("Lose");
-                    gamesToRemove.Add(game);
-                }
-                
-                game.Run();
-                
-                await _hub.Clients.Groups(game.Id).SendAsync("Update", game);
-            }
-
-            foreach (var game in gamesToRemove)
-            {
-                _context.RemoveGame(game);
-            }
+            await RunGamesAsync();
+            RemoveGames();
         }
 
         public void DisconnectPlayer(string snakeId)
@@ -82,12 +57,57 @@ namespace MultiplayerSnakeGame.Services
 
         public void MoveOrBoost(string snakeId, string direction)
         {
-            _context.GetSnakeById(snakeId)?.Move(direction);
+            _context.GetSnakeById(snakeId)?.MoveOrBoost(direction);
         }
 
         public void StopSnakeBoost(string snakeId)
         {
             _context.GetSnakeById(snakeId)?.ReduceSpeed();
+        }
+
+        private async Task RunGamesAsync()
+        {
+            foreach (var game in _context.Games)
+            {
+                if (game.HasNoPlayersAlive())
+                {
+                    _gamesToRemove.Add(game);
+                    continue;
+                }
+
+                await CheckIfGameHasOverAsync(game);
+
+                game.Run();
+
+                await UpdateGameAsync(game);
+            }
+        }
+
+        private async Task CheckIfGameHasOverAsync(Game game)
+        {
+            if (!game.Over)
+            {
+                return;
+            }
+
+            var winner = game.Winner;
+            await _hub.Clients.Client(winner.Id).SendAsync("Win");
+            await _hub.Groups.RemoveFromGroupAsync(winner.Id, game.Id);
+            await _hub.Clients.Groups(game.Id).SendAsync("Lose");
+            _gamesToRemove.Add(game);
+        }
+
+        private async Task UpdateGameAsync(Game game)
+        {
+            await _hub.Clients.Groups(game.Id).SendAsync("Update", game);
+        }
+
+        private void RemoveGames()
+        {
+            foreach (var game in _gamesToRemove)
+            {
+                _context.RemoveGame(game);
+            }
         }
 
         private Game GetGameById(string gameId)

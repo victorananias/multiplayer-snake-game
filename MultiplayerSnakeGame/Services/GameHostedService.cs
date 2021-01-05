@@ -26,7 +26,7 @@ namespace MultiplayerSnakeGame.Services
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                await _gameService.RunGames();
+                await _gameService.RunAsync();
 
                 await Task.Delay(10, stoppingToken);
             }

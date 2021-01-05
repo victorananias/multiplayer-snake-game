@@ -15,7 +15,7 @@ namespace MultiplayerSnakeGame.Services
 
             foreach (var collidable2 in collidables)
             {
-                if (collidable1.Id == collidable2.Id)
+                if (collidable1.Is(collidable2))
                 {
                     continue;
                 }

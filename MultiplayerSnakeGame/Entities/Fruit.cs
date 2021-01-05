@@ -59,5 +59,10 @@ namespace MultiplayerSnakeGame.Entities
         {
             _game.RemoveFruit(this);
         }
+
+        public bool Is(ICollidable collidable)
+        {
+            return Id == collidable.Id;
+        }
     }
 }
