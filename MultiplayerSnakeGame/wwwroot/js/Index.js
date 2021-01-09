@@ -8,6 +8,11 @@ const KEYS = ['w', 'a', 's', 'd', ' ']
 const canvas = document.querySelector('#game')
 const context = canvas.getContext('2d')
 
+import Background from './Background.js'
+import Keyboard from './Keyboard.js'
+import Snake from './Snake.js'
+import Fruit from './Fruit.js'
+
 const background = new Background(context)
 const keyboard = new Keyboard()
 

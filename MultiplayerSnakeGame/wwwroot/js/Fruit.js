@@ -1,4 +1,4 @@
-class Fruit {
+export default class Fruit {
     constructor(fruit, context) {
         Object.assign(this, fruit)
         this.context = context

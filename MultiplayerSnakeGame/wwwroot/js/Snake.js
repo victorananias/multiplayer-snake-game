@@ -1,4 +1,4 @@
-class Snake {
+export default class Snake {
 
     constructor(snake, context, color) {
         this.alive = true
