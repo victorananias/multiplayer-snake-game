@@ -1,3 +1,5 @@
+import { fruitColor } from "./Colors.js"
+
 export default class Fruit {
     constructor(fruit, context) {
         Object.assign(this, fruit)
@@ -5,7 +7,7 @@ export default class Fruit {
     }
 
     draw() {
-        this.context.fillStyle = '#c54c4c'
+        this.context.fillStyle = fruitColor
         this.context.fillRect(this.x, this.y, this.size, this.size)
     }
 }

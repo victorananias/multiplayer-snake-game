@@ -1,14 +1,15 @@
 import View from './View.js'
+import Score from './Score.js'
 
 export default {
     connection: new signalR.HubConnectionBuilder().withUrl("gamehub").build(),
     start() {
         this.connection.start()
-            .then(this.joinGame.bind(this))
+            .then(this.registerJoinGame.bind(this))
             .catch(err => console.error(err.toString()))
     },
-    joinGame(gameId) {
-        this.connection.invoke("JoinGame", gameId)
+    registerJoinGame() {
+        this.connection.invoke("JoinGame", this.getGameId())
             .catch(err => console.error(err.toString()))
     },
     registerUpdate() {
@@ -16,17 +17,8 @@ export default {
             View.clear()
             View.drawSnakes(snakes)
             View.drawFruits(fruits)
-            View.drawScoreList(scoreList)
+            Score.update(scoreList)
         })
-    },
-    snakeColor(snake, playerId) {
-        if (!snake.alive) {
-            return deadColor
-        } else if (!playerId) {
-            return playerColor
-        } else {
-            return snake.id == playerId ? playerColor : enemyColor
-        }
     },
     registerGameOver() {
         this.connection.on("Win", () => {
@@ -43,10 +35,16 @@ export default {
             gameOverTextElement.textContent = 'You Lose'
         })
     },
-    keyPressed() {
+    keyPressed(key) {
         this.connection.invoke("KeyPressed", key).catch(err => console.error(err.toString()))
     },
     keyReleased(key) {
         this.connection.invoke("KeyReleased", key).catch(err => console.error(err.toString()))
+    },
+    getGameId() {
+        return new URLSearchParams(window.location.search).get('game')
+    },
+    getPlayerId() {
+        return this.connection.connectionId
     }
 }

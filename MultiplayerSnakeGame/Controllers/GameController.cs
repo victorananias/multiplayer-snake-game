@@ -9,20 +9,15 @@ namespace MultiplayerSnakeGame.Controllers
 {
     public class GameController : Controller
     {
-        [HttpGet("")]
-        public IActionResult IndexWithoutGameId()
+        [HttpGet]
+        public IActionResult Index(string game)
         {
-            var gameId = Guid.NewGuid().ToString();
-            return Redirect($"/{gameId}");
-        }
-
-        [HttpGet("{gameId}")]
-        public IActionResult Index(string gameId)
-        {
-            return View(new GameViewModel
+            if (string.IsNullOrWhiteSpace(game))
             {
-                Id = gameId
-            });
+                return RedirectToAction("Index", routeValues: new { game = Guid.NewGuid().ToString() });
+            }
+
+            return View();
         }
     }
 }

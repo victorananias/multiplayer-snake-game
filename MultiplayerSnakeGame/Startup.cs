@@ -36,7 +36,7 @@ namespace MultiplayerSnakeGame
             services.AddScoped<KeyboardService>();
             services.AddScoped<CollisorService>();
             services.AddSingleton<GamesService>();
-            
+
             services.AddCors();
 
             services.AddSignalR();
@@ -60,9 +60,12 @@ namespace MultiplayerSnakeGame
                 options => options.SetIsOriginAllowed(x => _ = true).AllowAnyMethod().AllowAnyHeader().AllowCredentials()
             );
 
-            app.UseEndpoints(endpoints => {
+            app.UseEndpoints(endpoints =>
+            {
                 endpoints.MapHub<GameHub>("/gamehub");
-                endpoints.MapControllers();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Game}/{action=Index}");
             });
         }
     }
