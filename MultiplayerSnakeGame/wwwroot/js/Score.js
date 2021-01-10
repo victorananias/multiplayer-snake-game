@@ -1,13 +1,12 @@
 import Connection from "./Connection.js"
+import { $, $$ } from "./helpers.js"
 
 export default {
     scoreList: [],
-    scoreElement: document.querySelector('#score'),
     update(scoreList) {
         if (this.isEqualToCurrentScore(scoreList)) {
             return
         }
-
 
         this.scoreList = scoreList
         this.clean()
@@ -17,11 +16,11 @@ export default {
         return JSON.stringify(this.scoreList) == JSON.stringify(scoreList)
     },
     clean() {
-        [...document.querySelectorAll('#score tbody tr')].forEach(e => e.remove())
+        [...$$('#score tbody tr')].forEach(e => e.remove())
     },
     draw() {
         this.scoreList.forEach(score => {
-            this.scoreElement.innerHTML += `
+            $('#score').innerHTML += `
                 <tr class="${score.snakeId === Connection.getPlayerId() ? 'score-current-player ' : ''}">
                     <td>${score.snakeId}</td>
                     <td>${score.points}</td>
