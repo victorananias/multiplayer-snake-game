@@ -1,32 +1,23 @@
 import Connection from "./Connection.js"
 import { deadColor, playerColor, enemyColor } from "./Colors.js"
 
-export default class Snake {
+export default {
+    drawOnContext(snake, context) {
+        context.fillStyle = this.getColorForSnake(snake)
+        context.fillRect(snake.head.x, snake.head.y, snake.head.size, snake.head.size)
 
-    constructor(snake, context) {
-        this.alive = true
-        Object.assign(this, snake)
-        this.context = context
-    }
-
-    draw() {
-        this.context.fillStyle = this.getColor()
-        this.context.fillRect(this.head.x, this.head.y, this.head.size, this.head.size)
-
-        for (let i = 0; i < this.body.length; i++) {
-            const piece = this.body[i]
-            this.context.fillStyle = this.getColor()
-            this.context.fillRect(piece.x, piece.y, piece.size, piece.size)
+        for (let i = 0; i < snake.body.length; i++) {
+            const piece = snake.body[i]
+            context.fillRect(piece.x, piece.y, piece.size, piece.size)
         }
-    }
-
-    getColor() {
-        if (!this.alive) {
+    },
+    getColorForSnake(snake) {
+        if (!snake.alive) {
             return deadColor
-        } else if (!Connection.getPlayerId()) {
+        } else if (snake.id == Connection.getPlayerId()) {
             return playerColor
         } else {
-            return this.id == Connection.getPlayerId() ? playerColor : enemyColor
+            return enemyColor
         }
     }
 }

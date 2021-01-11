@@ -1,4 +1,4 @@
-import { getRouteParam } from "./helpers"
+import { getRouteParam } from "./helpers.js"
 
 export default {
     connection: new signalR.HubConnectionBuilder().withUrl("gamehub").build(),

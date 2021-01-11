@@ -1,12 +1,12 @@
 import Connection from "./Connection.js"
-import Keyboard from "./Keyboard.js"
+import KeyboardEvents from "./KeyboardEvents.js"
 
 export default {
     keys: ['w', 'a', 's', 'd', ' '],
-    registerKeys() {
-        ['w', 'a', 's', 'd', ' '].forEach(key => {
-            Keyboard.onPress(key, () => Connection.invokeKeyPressed(key))
-            Keyboard.onRelease(key, () => Connection.invokeKeyReleased(key))
+    enable() {
+        this.keys.forEach(key => {
+            KeyboardEvents.onPress(key, () => Connection.invokeKeyPressed(key))
+            KeyboardEvents.onRelease(key, () => Connection.invokeKeyReleased(key))
         })
     }
 }

@@ -33,6 +33,6 @@ export default {
         this.canvasContext.fillRect(canvasProps.x, canvasProps.y, canvasProps.width, canvasProps.height)
     },
     drawObjectsOfType(objects, type) {
-        objects.forEach(object => new type(object, this.canvasContext).draw())
+        objects.forEach(object => type.drawOnContext(object, this.canvasContext))
     }
 }
