@@ -37,5 +37,12 @@ namespace MultiplayerSnakeGame.Data
         {
             Snakes.Add(snake);
         }
+
+        public Game CreateGame(string gameId)
+        {
+            var game = new Game(gameId);
+            AddGame(game);
+            return game;
+        }
     }
 }

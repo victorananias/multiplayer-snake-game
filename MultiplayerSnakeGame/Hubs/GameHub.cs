@@ -26,9 +26,7 @@ namespace MultiplayerSnakeGame.Hubs
                 return;
             }
             
-            _gamesService.AddSnake(gameId, Context.ConnectionId);
-            
-            Groups.AddToGroupAsync(Context.ConnectionId, groupName: gameId);
+            _gamesService.ConnectPlayer(gameId, Context.ConnectionId);
         }
 
         public void KeyPressed(string key)

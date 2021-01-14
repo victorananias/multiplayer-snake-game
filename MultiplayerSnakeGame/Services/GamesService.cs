@@ -24,24 +24,24 @@ namespace MultiplayerSnakeGame.Services
             _hub = hub;
         }
 
-        public void AddSnake(string gameId, string snakeId)
+        public void ConnectPlayer(string gameId, string snakeId)
         {
             var game = GetGameById(gameId);
 
             if (game == null)
             {
-                game = new Game(gameId);
-                _context.AddGame(game);
+                game = _context.CreateGame(gameId);
             }
 
-            var snake = game.CreateSnake(snakeId);
-            
+            var snake = game.TryCreateSnake(snakeId);
+
             if (snake == null)
             {
                 return;
             }
 
             _context.AddSnake(snake);
+            _hub.Groups.AddToGroupAsync(snakeId, groupName: gameId);
         }
 
         public async Task RunAsync()

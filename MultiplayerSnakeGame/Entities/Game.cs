@@ -64,7 +64,7 @@ namespace MultiplayerSnakeGame.Entities
             ScoreList = ScoreList.OrderByDescending(s => s.Points).ToList();
         }
 
-        public Snake CreateSnake(string snakeId)
+        public Snake TryCreateSnake(string snakeId)
         {
             var random = new Random();
             var x = random.Next(500 - 20) / 20 * 20;

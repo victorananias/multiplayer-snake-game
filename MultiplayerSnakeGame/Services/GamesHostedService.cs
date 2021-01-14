@@ -11,11 +11,11 @@ using MultiplayerSnakeGame.Entities;
 
 namespace MultiplayerSnakeGame.Services
 {
-    public class GameHostedService : BackgroundService
+    public class GamesHostedService : BackgroundService
     {
         private GamesService _gameService;
 
-        public GameHostedService(
+        public GamesHostedService(
             GamesService gameService
         )
         {
