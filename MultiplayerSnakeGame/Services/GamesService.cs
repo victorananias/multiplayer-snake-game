@@ -24,7 +24,7 @@ namespace MultiplayerSnakeGame.Services
             _hub = hub;
         }
 
-        public void ConnectPlayer(string gameId, string snakeId)
+        public void ConnectPlayer(string gameId, string playerId)
         {
             var game = GetGameById(gameId);
 
@@ -33,15 +33,15 @@ namespace MultiplayerSnakeGame.Services
                 game = _context.CreateGame(gameId);
             }
 
-            var snake = game.TryCreateSnake(snakeId);
+            var player = game.TryCreatePlayer(playerId);
 
-            if (snake == null)
+            if (player == null)
             {
                 return;
             }
 
-            _context.AddSnake(snake);
-            _hub.Groups.AddToGroupAsync(snakeId, groupName: gameId);
+            _context.AddSnake(player);
+            _hub.Groups.AddToGroupAsync(playerId, groupName: gameId);
         }
 
         public async Task RunAsync()
@@ -50,19 +50,19 @@ namespace MultiplayerSnakeGame.Services
             RemoveGames();
         }
 
-        public void DisconnectPlayer(string snakeId)
+        public void DisconnectPlayer(string playerId)
         {
-            _context.GetSnakeById(snakeId)?.Die();
+            _context.GetSnakeById(playerId)?.Die();
         }
 
-        public void MoveOrBoost(string snakeId, string direction)
+        public void MoveOrBoost(string playerId, string direction)
         {
-            _context.GetSnakeById(snakeId)?.MoveOrBoost(direction);
+            _context.GetSnakeById(playerId)?.MoveOrBoost(direction);
         }
 
-        public void StopSnakeBoost(string snakeId)
+        public void StopSnakeBoost(string playerId)
         {
-            _context.GetSnakeById(snakeId)?.ReduceSpeed();
+            _context.GetSnakeById(playerId)?.ReduceSpeed();
         }
 
         private async Task RunGamesAsync()
@@ -90,9 +90,8 @@ namespace MultiplayerSnakeGame.Services
                 return;
             }
 
-            var winner = game.Winner;
-            await _hub.Clients.Client(winner.Id).SendAsync("Win");
-            await _hub.Groups.RemoveFromGroupAsync(winner.Id, game.Id);
+            await _hub.Clients.Client(game.Winner.Id).SendAsync("Win");
+            await _hub.Groups.RemoveFromGroupAsync(game.Winner.Id, game.Id);
             await _hub.Clients.Groups(game.Id).SendAsync("Lose");
             _gamesToRemove.Add(game);
         }

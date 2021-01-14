@@ -13,20 +13,20 @@ namespace MultiplayerSnakeGame.Services
 {
     public class GamesHostedService : BackgroundService
     {
-        private GamesService _gameService;
+        private GamesService _gamesService;
 
         public GamesHostedService(
-            GamesService gameService
+            GamesService gamesService
         )
         {
-            _gameService = gameService;
+            _gamesService = gamesService;
         }
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                await _gameService.RunAsync();
+                await _gamesService.RunAsync();
 
                 await Task.Delay(10, stoppingToken);
             }

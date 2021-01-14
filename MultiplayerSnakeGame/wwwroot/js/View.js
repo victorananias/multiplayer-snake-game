@@ -1,5 +1,5 @@
-import Snake from "./Snake.js"
-import Fruit from "./Fruit.js"
+import Player from "./Player.js"
+import Point from "./Point.js"
 import Score from "./Score.js"
 import { backgroundColor } from "./Colors.js"
 import { $, capitalize } from "./helpers.js"
@@ -13,11 +13,11 @@ const canvasProps = {
 
 export default {
     canvasContext: $('#game').getContext('2d'),
-    onUpdate({ snakes, fruits, scoreList }) {
+    onUpdate({ players, points, scoreList }) {
         this.clearCanvas()
         this.drawBackGround()
-        this.drawObjectsOfType(snakes, Snake)
-        this.drawObjectsOfType(fruits, Fruit)
+        this.drawObjectsOfType(players, Player)
+        this.drawObjectsOfType(points, Point)
         Score.update(scoreList)
     },
     onGameOver(result) {

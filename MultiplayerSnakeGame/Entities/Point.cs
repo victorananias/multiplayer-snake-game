@@ -4,7 +4,7 @@ using MultiplayerSnakeGame.Interfaces;
 
 namespace MultiplayerSnakeGame.Entities
 {
-    public class Fruit : ICollidable
+    public class Point : ICollidable
     {
         public string Id { get; set; }
         private Game _game;
@@ -30,14 +30,14 @@ namespace MultiplayerSnakeGame.Entities
         }
 
 
-        public Fruit(Game game)
+        public Point(Game game)
         {
             Size = 20;
             Id = Guid.NewGuid().ToString();
             _game = game;
         }
 
-        public Fruit(int x, int y, Game game)
+        public Point(int x, int y, Game game)
         {
             Size = 20;
             Id = Guid.NewGuid().ToString();
@@ -57,7 +57,7 @@ namespace MultiplayerSnakeGame.Entities
 
         public void WillBeHittedBy(ICollidable collidable)
         {
-            _game.RemoveFruit(this);
+            _game.RemovePoint(this);
         }
 
         public bool Is(ICollidable collidable)

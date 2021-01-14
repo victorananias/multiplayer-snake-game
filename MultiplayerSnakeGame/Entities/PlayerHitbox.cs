@@ -2,9 +2,9 @@ using System;
 
 namespace MultiplayerSnakeGame.Entities
 {
-    public class SnakePiece
+    public class PlayerHitbox
     {
-        public SnakePiece(int x, int y)
+        public PlayerHitbox(int x, int y)
         {
             X = x;
             Y = y;

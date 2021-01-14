@@ -5,13 +5,13 @@ using MultiplayerSnakeGame.Interfaces;
 
 namespace MultiplayerSnakeGame.Entities
 {
-    public class Snake : ICollidable
+    public class Player : ICollidable
     {
-        public Snake(string id, int x, int y, Game game)
+        public Player(string id, int x, int y, Game game)
         {
             Id = id;
-            Head = new SnakePiece(x, y);
-            Body = new List<SnakePiece>();
+            Head = new PlayerHitbox(x, y);
+            Body = new List<PlayerHitbox>();
             _game = game;
             LastUpdate = DateTime.Now;
             Direction = "";
@@ -23,8 +23,8 @@ namespace MultiplayerSnakeGame.Entities
         public int DefaultUpdateTime { get; set; }
         public int CurrentUpdateTime { get; set; }
         public string Id { get; set; }
-        public SnakePiece Head { get; set; }
-        public List<SnakePiece> Body { get; set; }
+        public PlayerHitbox Head { get; set; }
+        public List<PlayerHitbox> Body { get; set; }
         public DateTime LastUpdate { get; set; }
         public string Direction { get; set; }
 
@@ -70,16 +70,16 @@ namespace MultiplayerSnakeGame.Entities
 
         public ICollidable Next()
         {
-            var updatedSnake = new Snake(Id, Head.X, Head.Y, null)
+            var updatedPlayer = new Player(Id, Head.X, Head.Y, null)
             {
-                Body = Body.Select(b => new SnakePiece(b.X, b.Y)).ToList(),
+                Body = Body.Select(b => new PlayerHitbox(b.X, b.Y)).ToList(),
                 LastUpdate = DateTime.Now.AddMinutes(-1),
                 Direction = Direction
             };
 
-            updatedSnake.Update();
+            updatedPlayer.Update();
 
-            return updatedSnake;
+            return updatedPlayer;
         }
 
         public void Update()
@@ -165,7 +165,7 @@ namespace MultiplayerSnakeGame.Entities
 
         public void Grow()
         {
-            Body.Add(new SnakePiece(-200, -200));
+            Body.Add(new PlayerHitbox(-200, -200));
         }
 
         public bool ShouldUpdate()
@@ -175,13 +175,13 @@ namespace MultiplayerSnakeGame.Entities
 
         public void WillCollideTo(ICollidable collidable)
         {
-            if (collidable is Snake)
+            if (collidable is Player)
             {
                 Die();
             }
 
 
-            if (collidable is Fruit)
+            if (collidable is Point)
             {
                 Grow();
                 _game.PointTo(this);
