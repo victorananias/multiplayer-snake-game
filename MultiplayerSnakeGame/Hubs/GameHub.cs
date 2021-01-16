@@ -4,11 +4,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
+using MultiplayerSnakeGame.Entities;
 using MultiplayerSnakeGame.Services;
 
 namespace MultiplayerSnakeGame.Hubs
 {
-    public class GameHub : Hub
+    public class GameHub : Hub, IGameHub
     {
         private GamesService _gamesService;
         private KeyboardService _keyboardService;
@@ -42,6 +43,11 @@ namespace MultiplayerSnakeGame.Hubs
         public async override Task OnDisconnectedAsync(Exception exception)
         {
             _gamesService.DisconnectPlayer(Context.ConnectionId);
+        }
+
+        public Task NotifyClientsGameIsOver(Game game)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -41,13 +41,18 @@ namespace MultiplayerSnakeGame.Services
             }
 
             _context.AddSnake(player);
+            AddPlayerIdToGameIdNotifyList(playerId, gameId);
+        }
+
+        private void AddPlayerIdToGameIdNotifyList(string playerId, string gameId)
+        {
             _hub.Groups.AddToGroupAsync(playerId, groupName: gameId);
         }
 
-        public async Task RunAsync()
+        public async Task ExecuteAsync()
         {
             await RunGamesAsync();
-            RemoveGames();
+            RemoveNonPlayedGames();
         }
 
         public void DisconnectPlayer(string playerId)
@@ -75,33 +80,31 @@ namespace MultiplayerSnakeGame.Services
                     continue;
                 }
 
-                await CheckIfGameHasOverAsync(game);
+                if (game.Over)
+                {
+                    await NotifyClientsGameIsOver(game);
+                    _gamesToRemove.Add(game);
+                }
 
                 game.Run();
 
-                await UpdateGameAsync(game);
+                await NotifyClientsGameUpdates(game);
             }
         }
 
-        private async Task CheckIfGameHasOverAsync(Game game)
+        private async Task NotifyClientsGameIsOver(Game game)
         {
-            if (!game.Over)
-            {
-                return;
-            }
-
             await _hub.Clients.Client(game.Winner.Id).SendAsync("Win");
             await _hub.Groups.RemoveFromGroupAsync(game.Winner.Id, game.Id);
             await _hub.Clients.Groups(game.Id).SendAsync("Lose");
-            _gamesToRemove.Add(game);
         }
 
-        private async Task UpdateGameAsync(Game game)
+        private async Task NotifyClientsGameUpdates(Game game)
         {
             await _hub.Clients.Groups(game.Id).SendAsync("Update", game);
         }
 
-        private void RemoveGames()
+        private void RemoveNonPlayedGames()
         {
             foreach (var game in _gamesToRemove)
             {

@@ -14,6 +14,7 @@ namespace MultiplayerSnakeGame.Services
     public class GamesHostedService : BackgroundService
     {
         private GamesService _gamesService;
+        private const int _delayTime = 10;
 
         public GamesHostedService(
             GamesService gamesService
@@ -26,10 +27,15 @@ namespace MultiplayerSnakeGame.Services
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                await _gamesService.RunAsync();
+                await _gamesService.ExecuteAsync();
 
-                await Task.Delay(10, stoppingToken);
+                await DelayTaskAsync(stoppingToken);
             }
+        }
+
+        private async Task DelayTaskAsync(CancellationToken stoppingToken)
+        {
+            await Task.Delay(_delayTime, stoppingToken);
         }
     }
 }
