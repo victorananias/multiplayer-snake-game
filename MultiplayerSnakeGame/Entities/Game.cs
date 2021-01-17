@@ -40,18 +40,10 @@ namespace MultiplayerSnakeGame.Entities
                 return;
             }
 
-            var collidables = new List<ICollidable>(Players);
-            collidables.AddRange(Points);
+            var playersToUpdate = GetPlayersToUpdate();
 
-            foreach (var player in Players.Where(player => player.Alive && player.ShouldUpdate()))
-            {
-                _collisorService.Check(player, collidables);
-            }
-
-            foreach (var player in Players.Where(player => player.Alive && player.ShouldUpdate()))
-            {
-                player.Update();
-            }
+            CheckPlayersCollisions(playersToUpdate);
+            UpdatePlayers(playersToUpdate);
 
             if (Players.Count > 1)
             {
@@ -60,8 +52,41 @@ namespace MultiplayerSnakeGame.Entities
                     GeneratePoint();
                 }
             }
-            
+
+            SortScore();
+        }
+
+        private void CheckPlayersCollisions(List<Player> playersToUpdate)
+        {
+            var collidables = GetCollidables();
+
+            foreach (var player in playersToUpdate)
+            {
+                _collisorService.Check(player, collidables);
+            }
+        }
+
+        private void UpdatePlayers(List<Player> playersToUpdate)
+        {
+            foreach (var player in playersToUpdate)
+            {
+                player.Update();
+            }
+        }
+
+        private void SortScore()
+        {
             ScoreList = ScoreList.OrderByDescending(s => s.Points).ToList();
+        }
+
+        private List<Player> GetPlayersToUpdate()
+        {
+            return Players.Where(player => player.Alive && player.ShouldUpdate()).ToList();
+        }
+
+        private List<ICollidable> GetCollidables()
+        {
+            return new List<ICollidable>(Players).Concat(Points).ToList();
         }
 
         public Player TryCreatePlayer(string playerId)

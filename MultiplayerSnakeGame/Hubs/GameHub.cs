@@ -9,7 +9,7 @@ using MultiplayerSnakeGame.Services;
 
 namespace MultiplayerSnakeGame.Hubs
 {
-    public class GameHub : Hub, IGameHub
+    public class GameHub : Hub
     {
         private GamesService _gamesService;
         private KeyboardService _keyboardService;
@@ -18,6 +18,11 @@ namespace MultiplayerSnakeGame.Hubs
         {
             _gamesService = gamesService;
             _keyboardService = keyboardService;
+        }
+
+        public async override Task OnDisconnectedAsync(Exception exception)
+        {
+            _gamesService.DisconnectPlayer(Context.ConnectionId);
         }
 
         public void JoinGame(string gameId)
@@ -38,16 +43,6 @@ namespace MultiplayerSnakeGame.Hubs
         public void KeyReleased(string key)
         {
             _keyboardService.Release(Context.ConnectionId, key);
-        }
-
-        public async override Task OnDisconnectedAsync(Exception exception)
-        {
-            _gamesService.DisconnectPlayer(Context.ConnectionId);
-        }
-
-        public Task NotifyClientsGameIsOver(Game game)
-        {
-            throw new NotImplementedException();
         }
     }
 }

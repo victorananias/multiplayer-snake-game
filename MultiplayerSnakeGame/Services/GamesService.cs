@@ -26,7 +26,7 @@ namespace MultiplayerSnakeGame.Services
 
         public void ConnectPlayer(string gameId, string playerId)
         {
-            var game = GetGameById(gameId);
+            var game = _context.GetGameById(gameId);
 
             if (game == null)
             {
@@ -41,18 +41,13 @@ namespace MultiplayerSnakeGame.Services
             }
 
             _context.AddSnake(player);
-            AddPlayerIdToGameIdNotifyList(playerId, gameId);
-        }
-
-        private void AddPlayerIdToGameIdNotifyList(string playerId, string gameId)
-        {
-            _hub.Groups.AddToGroupAsync(playerId, groupName: gameId);
+            AddPlayerToGameNotifyList(playerId, gameId);
         }
 
         public async Task ExecuteAsync()
         {
             await RunGamesAsync();
-            RemoveNonPlayedGames();
+            _context.RemoveGames(_gamesToRemove);
         }
 
         public void DisconnectPlayer(string playerId)
@@ -68,6 +63,11 @@ namespace MultiplayerSnakeGame.Services
         public void StopSnakeBoost(string playerId)
         {
             _context.GetSnakeById(playerId)?.ReduceSpeed();
+        }
+
+        private void AddPlayerToGameNotifyList(string playerId, string gameId)
+        {
+            _hub.Groups.AddToGroupAsync(playerId, groupName: gameId);
         }
 
         private async Task RunGamesAsync()
@@ -102,19 +102,6 @@ namespace MultiplayerSnakeGame.Services
         private async Task NotifyClientsGameUpdates(Game game)
         {
             await _hub.Clients.Groups(game.Id).SendAsync("Update", game);
-        }
-
-        private void RemoveNonPlayedGames()
-        {
-            foreach (var game in _gamesToRemove)
-            {
-                _context.RemoveGame(game);
-            }
-        }
-
-        private Game GetGameById(string gameId)
-        {
-            return _context.Games.FirstOrDefault(g => g.Id == gameId);
         }
     }
 }

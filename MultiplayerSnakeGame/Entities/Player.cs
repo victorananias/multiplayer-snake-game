@@ -180,7 +180,6 @@ namespace MultiplayerSnakeGame.Entities
                 Die();
             }
 
-
             if (collidable is Point)
             {
                 Grow();

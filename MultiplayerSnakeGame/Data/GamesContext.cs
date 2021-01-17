@@ -33,6 +33,11 @@ namespace MultiplayerSnakeGame.Data
             Games.Remove(game);
         }
 
+        public Game GetGameById(string gameId)
+        {
+            return Games.FirstOrDefault(g => g.Id == gameId);
+        }
+
         public void AddSnake(Player player)
         {
             Players.Add(player);
@@ -43,6 +48,14 @@ namespace MultiplayerSnakeGame.Data
             var game = new Game(gameId);
             AddGame(game);
             return game;
+        }
+
+        public void RemoveGames(List<Game> gamesToRemove)
+        {
+            foreach (var game in gamesToRemove)
+            {
+                RemoveGame(game);
+            }
         }
     }
 }
