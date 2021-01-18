@@ -20,6 +20,12 @@ export default {
         this.drawObjectsOfType(points, Point)
         Score.update(scoreList)
     },
+    onWin() {
+        this.onGameOver('win')
+    },
+    onLose() {
+        this.onGameOver('lose')
+    },
     onGameOver(result) {
         $('.game-over').classList.add('display-block', 'animation-running')
         $('.game-over-text').classList.add(result)

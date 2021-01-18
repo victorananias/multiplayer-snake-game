@@ -33,7 +33,7 @@ namespace MultiplayerSnakeGame
             services.AddHostedService<GamesHostedService>();
 
             services.AddSingleton<GamesContext>();
-            services.AddScoped<KeyboardService>();
+            services.AddScoped<ActionsService>();
             services.AddScoped<CollisorService>();
             services.AddSingleton<GamesService>();
 

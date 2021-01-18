@@ -12,12 +12,12 @@ namespace MultiplayerSnakeGame.Hubs
     public class GameHub : Hub
     {
         private GamesService _gamesService;
-        private KeyboardService _keyboardService;
+        private ActionsService _actionsService;
 
-        public GameHub(GamesService gamesService, KeyboardService keyboardService)
+        public GameHub(GamesService gamesService, ActionsService actionsService)
         {
             _gamesService = gamesService;
-            _keyboardService = keyboardService;
+            _actionsService = actionsService;
         }
 
         public async override Task OnDisconnectedAsync(Exception exception)
@@ -35,14 +35,14 @@ namespace MultiplayerSnakeGame.Hubs
             _gamesService.ConnectPlayer(gameId, Context.ConnectionId);
         }
 
-        public void KeyPressed(string key)
+        public void StartAction(string action)
         {
-            _keyboardService.Press(Context.ConnectionId, key);
+            _actionsService.Start(Context.ConnectionId, action);
         }
 
-        public void KeyReleased(string key)
+        public void StopAction(string action)
         {
-            _keyboardService.Release(Context.ConnectionId, key);
+            _actionsService.Stop(Context.ConnectionId, action);
         }
     }
 }

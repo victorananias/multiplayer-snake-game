@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MultiplayerSnakeGame.Data;
 using MultiplayerSnakeGame.Interfaces;
 
 namespace MultiplayerSnakeGame.Entities
@@ -14,7 +15,7 @@ namespace MultiplayerSnakeGame.Entities
             Body = new List<PlayerHitbox>();
             _game = game;
             LastUpdate = DateTime.Now;
-            Direction = "";
+            Direction = string.Empty;
             DefaultUpdateTime = 300;
             CurrentUpdateTime = DefaultUpdateTime;
             Alive = true;
@@ -57,10 +58,10 @@ namespace MultiplayerSnakeGame.Entities
 
         private bool IsCurrentDirectionOpositeToReceived(string direction)
         {
-            return (direction == "up" && Direction == "down")
-                    || (direction == "down" && Direction == "up")
-                    || (direction == "right" && Direction == "left")
-                    || (direction == "left" && Direction == "right");
+            return (direction == MoveKeys.Up && Direction == MoveKeys.Down)
+                    || (direction == MoveKeys.Down && Direction == MoveKeys.Up)
+                    || (direction == MoveKeys.Right && Direction == MoveKeys.Left)
+                    || (direction == MoveKeys.Left && Direction == MoveKeys.Right);
         }
 
         public void ReduceSpeed()
@@ -94,7 +95,7 @@ namespace MultiplayerSnakeGame.Entities
 
             switch (Direction)
             {
-                case "up":
+                case MoveKeys.Up:
                     y -= Head.Size;
                     if (y < 0)
                     {
@@ -102,7 +103,7 @@ namespace MultiplayerSnakeGame.Entities
                     }
 
                     break;
-                case "right":
+                case MoveKeys.Right:
                     x += Head.Size;
                     if (x > 500 - 20)
                     {
@@ -111,7 +112,7 @@ namespace MultiplayerSnakeGame.Entities
 
                     break;
 
-                case "down":
+                case MoveKeys.Down:
                     y += Head.Size;
                     if (y > 500 - 20)
                     {
@@ -120,7 +121,7 @@ namespace MultiplayerSnakeGame.Entities
 
                     break;
 
-                case "left":
+                case MoveKeys.Left:
                     x -= Head.Size;
                     if (x < 0)
                     {
