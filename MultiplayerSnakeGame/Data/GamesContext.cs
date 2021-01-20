@@ -11,15 +11,15 @@ namespace MultiplayerSnakeGame.Data
         public GamesContext()
         {
             Games = new List<Game>();
-            Snakes = new List<Snake>();
+            Players = new List<Player>();
         }
 
         public List<Game> Games { get; set; }
-        public List<Snake> Snakes { get; set; }
+        public List<Player> Players { get; set; }
 
-        public Snake GetSnakeById(string snakeId)
+        public Player GetSnakeById(string playerId)
         {
-            return Snakes.FirstOrDefault(s => s.Id == snakeId);
+            return Players.FirstOrDefault(s => s.Id == playerId);
         }
 
         public void AddGame(Game game)
@@ -29,13 +29,33 @@ namespace MultiplayerSnakeGame.Data
 
         public void RemoveGame(Game game)
         {
-            game.Snakes.ForEach(snake => Snakes.Remove(snake));
+            game.Players.ForEach(player => Players.Remove(player));
             Games.Remove(game);
         }
 
-        public void AddSnake(Snake snake)
+        public Game GetGameById(string gameId)
         {
-            Snakes.Add(snake);
+            return Games.FirstOrDefault(g => g.Id == gameId);
+        }
+
+        public void AddSnake(Player player)
+        {
+            Players.Add(player);
+        }
+
+        public Game CreateGame(string gameId)
+        {
+            var game = new Game(gameId);
+            AddGame(game);
+            return game;
+        }
+
+        public void RemoveGames(List<Game> gamesToRemove)
+        {
+            foreach (var game in gamesToRemove)
+            {
+                RemoveGame(game);
+            }
         }
     }
 }

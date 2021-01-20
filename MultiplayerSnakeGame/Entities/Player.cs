@@ -1,20 +1,23 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
+using MultiplayerSnakeGame.Data;
 using MultiplayerSnakeGame.Interfaces;
 
 namespace MultiplayerSnakeGame.Entities
 {
-    public class Snake : ICollidable
+    public class Player : ICollidable
     {
-        public Snake(string id, int x, int y, Game game)
+        public Player(string id, int x, int y, Game game)
         {
             Id = id;
-            Head = new SnakePiece(x, y);
-            Body = new List<SnakePiece>();
-            _game = game;
+            Head = new PlayerHitbox(x, y);
+            Body = new List<PlayerHitbox>();
+            Game = game;
             LastUpdate = DateTime.Now;
-            Direction = "";
+            Direction = string.Empty;
             DefaultUpdateTime = 300;
             CurrentUpdateTime = DefaultUpdateTime;
             Alive = true;
@@ -23,8 +26,8 @@ namespace MultiplayerSnakeGame.Entities
         public int DefaultUpdateTime { get; set; }
         public int CurrentUpdateTime { get; set; }
         public string Id { get; set; }
-        public SnakePiece Head { get; set; }
-        public List<SnakePiece> Body { get; set; }
+        public PlayerHitbox Head { get; set; }
+        public List<PlayerHitbox> Body { get; set; }
         public DateTime LastUpdate { get; set; }
         public string Direction { get; set; }
 
@@ -41,8 +44,8 @@ namespace MultiplayerSnakeGame.Entities
         public bool Alive { get; set; }
         public bool ShouldGrow { get; set; }
         public bool Win { get; set; }
-
-        private Game _game;
+        [JsonIgnore]
+        public Game Game { get; set; }
 
         public void MoveOrBoost(string direction)
         {
@@ -57,10 +60,10 @@ namespace MultiplayerSnakeGame.Entities
 
         private bool IsCurrentDirectionOpositeToReceived(string direction)
         {
-            return (direction == "up" && Direction == "down")
-                    || (direction == "down" && Direction == "up")
-                    || (direction == "right" && Direction == "left")
-                    || (direction == "left" && Direction == "right");
+            return (direction == MoveKeys.Up && Direction == MoveKeys.Down)
+                    || (direction == MoveKeys.Down && Direction == MoveKeys.Up)
+                    || (direction == MoveKeys.Right && Direction == MoveKeys.Left)
+                    || (direction == MoveKeys.Left && Direction == MoveKeys.Right);
         }
 
         public void ReduceSpeed()
@@ -68,18 +71,18 @@ namespace MultiplayerSnakeGame.Entities
             CurrentUpdateTime = DefaultUpdateTime;
         }
 
-        public ICollidable Next()
+        public ICollidable Updated()
         {
-            var updatedSnake = new Snake(Id, Head.X, Head.Y, null)
+            var updatedPlayer = new Player(Id, Head.X, Head.Y, null)
             {
-                Body = Body.Select(b => new SnakePiece(b.X, b.Y)).ToList(),
+                Body = Body.Select(b => new PlayerHitbox(b.X, b.Y)).ToList(),
                 LastUpdate = DateTime.Now.AddMinutes(-1),
                 Direction = Direction
             };
 
-            updatedSnake.Update();
+            updatedPlayer.Update();
 
-            return updatedSnake;
+            return updatedPlayer;
         }
 
         public void Update()
@@ -94,7 +97,7 @@ namespace MultiplayerSnakeGame.Entities
 
             switch (Direction)
             {
-                case "up":
+                case MoveKeys.Up:
                     y -= Head.Size;
                     if (y < 0)
                     {
@@ -102,7 +105,7 @@ namespace MultiplayerSnakeGame.Entities
                     }
 
                     break;
-                case "right":
+                case MoveKeys.Right:
                     x += Head.Size;
                     if (x > 500 - 20)
                     {
@@ -111,7 +114,7 @@ namespace MultiplayerSnakeGame.Entities
 
                     break;
 
-                case "down":
+                case MoveKeys.Down:
                     y += Head.Size;
                     if (y > 500 - 20)
                     {
@@ -120,7 +123,7 @@ namespace MultiplayerSnakeGame.Entities
 
                     break;
 
-                case "left":
+                case MoveKeys.Left:
                     x -= Head.Size;
                     if (x < 0)
                     {
@@ -165,7 +168,7 @@ namespace MultiplayerSnakeGame.Entities
 
         public void Grow()
         {
-            Body.Add(new SnakePiece(-200, -200));
+            Body.Add(new PlayerHitbox(-200, -200));
         }
 
         public bool ShouldUpdate()
@@ -175,16 +178,15 @@ namespace MultiplayerSnakeGame.Entities
 
         public void WillCollideTo(ICollidable collidable)
         {
-            if (collidable is Snake)
+            if (collidable is Player)
             {
                 Die();
             }
 
-
-            if (collidable is Fruit)
+            if (collidable is Point)
             {
                 Grow();
-                _game.PointTo(this);
+                Game.PointTo(this);
             }
         }
 

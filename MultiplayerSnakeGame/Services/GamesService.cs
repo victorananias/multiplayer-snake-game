@@ -24,45 +24,50 @@ namespace MultiplayerSnakeGame.Services
             _hub = hub;
         }
 
-        public void AddSnake(string gameId, string snakeId)
+        public void ConnectPlayer(string gameId, string playerId)
         {
-            var game = GetGameById(gameId);
+            var game = _context.GetGameById(gameId);
 
             if (game == null)
             {
-                game = new Game(gameId);
-                _context.AddGame(game);
+                game = _context.CreateGame(gameId);
             }
 
-            var snake = game.CreateSnake(snakeId);
-            
-            if (snake == null)
+            var player = game.TryCreatePlayer(playerId);
+
+            if (player == null)
             {
                 return;
             }
 
-            _context.AddSnake(snake);
+            _context.AddSnake(player);
+            AddPlayerToGameNotifyList(playerId, gameId);
         }
 
-        public async Task RunAsync()
+        public async Task ExecuteAsync()
         {
             await RunGamesAsync();
-            RemoveGames();
+            _context.RemoveGames(_gamesToRemove);
         }
 
-        public void DisconnectPlayer(string snakeId)
+        public void DisconnectPlayer(string playerId)
         {
-            _context.GetSnakeById(snakeId)?.Die();
+            _context.GetSnakeById(playerId)?.Die();
         }
 
-        public void MoveOrBoost(string snakeId, string direction)
+        public void MoveOrBoost(string playerId, string direction)
         {
-            _context.GetSnakeById(snakeId)?.MoveOrBoost(direction);
+            _context.GetSnakeById(playerId)?.MoveOrBoost(direction);
         }
 
-        public void StopSnakeBoost(string snakeId)
+        public void StopSnakeBoost(string playerId)
         {
-            _context.GetSnakeById(snakeId)?.ReduceSpeed();
+            _context.GetSnakeById(playerId)?.ReduceSpeed();
+        }
+
+        private void AddPlayerToGameNotifyList(string playerId, string gameId)
+        {
+            _hub.Groups.AddToGroupAsync(playerId, groupName: gameId);
         }
 
         private async Task RunGamesAsync()
@@ -75,44 +80,28 @@ namespace MultiplayerSnakeGame.Services
                     continue;
                 }
 
-                await CheckIfGameHasOverAsync(game);
+                if (game.Over)
+                {
+                    await NotifyClientsGameIsOver(game);
+                    _gamesToRemove.Add(game);
+                }
 
                 game.Run();
 
-                await UpdateGameAsync(game);
+                await NotifyClientsGameUpdates(game);
             }
         }
 
-        private async Task CheckIfGameHasOverAsync(Game game)
+        private async Task NotifyClientsGameIsOver(Game game)
         {
-            if (!game.Over)
-            {
-                return;
-            }
-
-            var winner = game.Winner;
-            await _hub.Clients.Client(winner.Id).SendAsync("Win");
-            await _hub.Groups.RemoveFromGroupAsync(winner.Id, game.Id);
+            await _hub.Clients.Client(game.Winner.Id).SendAsync("Win");
+            await _hub.Groups.RemoveFromGroupAsync(game.Winner.Id, game.Id);
             await _hub.Clients.Groups(game.Id).SendAsync("Lose");
-            _gamesToRemove.Add(game);
         }
 
-        private async Task UpdateGameAsync(Game game)
+        private async Task NotifyClientsGameUpdates(Game game)
         {
             await _hub.Clients.Groups(game.Id).SendAsync("Update", game);
-        }
-
-        private void RemoveGames()
-        {
-            foreach (var game in _gamesToRemove)
-            {
-                _context.RemoveGame(game);
-            }
-        }
-
-        private Game GetGameById(string gameId)
-        {
-            return _context.Games.FirstOrDefault(g => g.Id == gameId);
         }
     }
 }

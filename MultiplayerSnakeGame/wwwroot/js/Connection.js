@@ -23,16 +23,16 @@ export default {
     invoke(command, ...args) {
         this.connection.invoke(command, ...args)
     },
-    async invokeKeyPressed(key) {
+    async startAction(action) {
         try {
-            await this.invoke("KeyPressed", key)
+            await this.invoke("StartAction", action)
         } catch (e) {
             console.error(e)
         }
     },
-    async invokeKeyReleased(key) {
+    async stopAction(action) {
         try {
-            await this.invoke("KeyReleased", key)
+            await this.invoke("StopAction", action)
         } catch (e) {
             console.error(e)
         }

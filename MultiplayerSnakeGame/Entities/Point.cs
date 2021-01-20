@@ -1,13 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using MultiplayerSnakeGame.Interfaces;
 
 namespace MultiplayerSnakeGame.Entities
 {
-    public class Fruit : ICollidable
+    public class Point : ICollidable
     {
         public string Id { get; set; }
-        private Game _game;
+        [JsonIgnore]
+        private Game Game { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
         public int Size { get; set; }
@@ -30,23 +33,23 @@ namespace MultiplayerSnakeGame.Entities
         }
 
 
-        public Fruit(Game game)
+        public Point(Game game)
         {
             Size = 20;
             Id = Guid.NewGuid().ToString();
-            _game = game;
+            Game = game;
         }
 
-        public Fruit(int x, int y, Game game)
+        public Point(int x, int y, Game game)
         {
             Size = 20;
             Id = Guid.NewGuid().ToString();
             X = x;
             Y = y;
-            _game = game;
+            Game = game;
         }
 
-        public ICollidable Next()
+        public ICollidable Updated()
         {
             return this;
         }
@@ -57,7 +60,7 @@ namespace MultiplayerSnakeGame.Entities
 
         public void WillBeHittedBy(ICollidable collidable)
         {
-            _game.RemoveFruit(this);
+            Game.RemovePoint(this);
         }
 
         public bool Is(ICollidable collidable)

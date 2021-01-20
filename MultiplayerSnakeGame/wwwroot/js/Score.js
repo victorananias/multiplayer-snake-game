@@ -21,8 +21,8 @@ export default {
     draw() {
         this.scoreList.forEach(score => {
             $('#score').innerHTML += `
-                <tr class="${score.snakeId === Connection.getPlayerId() ? 'score-current-player ' : ''}">
-                    <td>${score.snakeId}</td>
+                <tr class="${score.playerId === Connection.getPlayerId() ? 'score-current-player ' : ''}">
+                    <td>${score.playerId}</td>
                     <td>${score.points}</td>
                 </tr>
             `

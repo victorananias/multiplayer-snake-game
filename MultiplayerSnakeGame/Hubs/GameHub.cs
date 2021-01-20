@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
+using MultiplayerSnakeGame.Entities;
 using MultiplayerSnakeGame.Services;
 
 namespace MultiplayerSnakeGame.Hubs
@@ -11,12 +12,17 @@ namespace MultiplayerSnakeGame.Hubs
     public class GameHub : Hub
     {
         private GamesService _gamesService;
-        private KeyboardService _keyboardService;
+        private ActionsService _actionsService;
 
-        public GameHub(GamesService gamesService, KeyboardService keyboardService)
+        public GameHub(GamesService gamesService, ActionsService actionsService)
         {
             _gamesService = gamesService;
-            _keyboardService = keyboardService;
+            _actionsService = actionsService;
+        }
+
+        public async override Task OnDisconnectedAsync(Exception exception)
+        {
+            _gamesService.DisconnectPlayer(Context.ConnectionId);
         }
 
         public void JoinGame(string gameId)
@@ -26,24 +32,17 @@ namespace MultiplayerSnakeGame.Hubs
                 return;
             }
             
-            _gamesService.AddSnake(gameId, Context.ConnectionId);
-            
-            Groups.AddToGroupAsync(Context.ConnectionId, groupName: gameId);
+            _gamesService.ConnectPlayer(gameId, Context.ConnectionId);
         }
 
-        public void KeyPressed(string key)
+        public void StartAction(string action)
         {
-            _keyboardService.Press(Context.ConnectionId, key);
+            _actionsService.Start(Context.ConnectionId, action);
         }
 
-        public void KeyReleased(string key)
+        public void StopAction(string action)
         {
-            _keyboardService.Release(Context.ConnectionId, key);
-        }
-
-        public async override Task OnDisconnectedAsync(Exception exception)
-        {
-            _gamesService.DisconnectPlayer(Context.ConnectionId);
+            _actionsService.Stop(Context.ConnectionId, action);
         }
     }
 }

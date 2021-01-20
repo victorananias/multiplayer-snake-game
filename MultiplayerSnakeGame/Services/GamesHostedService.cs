@@ -11,25 +11,31 @@ using MultiplayerSnakeGame.Entities;
 
 namespace MultiplayerSnakeGame.Services
 {
-    public class GameHostedService : BackgroundService
+    public class GamesHostedService : BackgroundService
     {
-        private GamesService _gameService;
+        private GamesService _gamesService;
+        private const int _delayTime = 10;
 
-        public GameHostedService(
-            GamesService gameService
+        public GamesHostedService(
+            GamesService gamesService
         )
         {
-            _gameService = gameService;
+            _gamesService = gamesService;
         }
 
         protected async override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                await _gameService.RunAsync();
+                await _gamesService.ExecuteAsync();
 
-                await Task.Delay(10, stoppingToken);
+                await DelayTaskAsync(stoppingToken);
             }
+        }
+
+        private async Task DelayTaskAsync(CancellationToken stoppingToken)
+        {
+            await Task.Delay(_delayTime, stoppingToken);
         }
     }
 }

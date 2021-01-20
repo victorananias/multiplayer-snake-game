@@ -9,9 +9,9 @@ namespace MultiplayerSnakeGame.Services
 {
     public class CollisorService
     {
-        public void Check(ICollidable collidable, List<ICollidable> collidables)
+        public static void Check(ICollidable collidable, List<ICollidable> collidables)
         {
-            var collidable1 = collidable.Next();
+            var collidable1 = collidable.Updated();
 
             foreach (var collidable2 in collidables)
             {

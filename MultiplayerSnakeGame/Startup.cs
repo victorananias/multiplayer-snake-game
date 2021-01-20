@@ -30,11 +30,10 @@ namespace MultiplayerSnakeGame
         {
             services.AddControllersWithViews();
 
-            services.AddHostedService<GameHostedService>();
+            services.AddHostedService<GamesHostedService>();
 
             services.AddSingleton<GamesContext>();
-            services.AddScoped<KeyboardService>();
-            services.AddScoped<CollisorService>();
+            services.AddScoped<ActionsService>();
             services.AddSingleton<GamesService>();
 
             services.AddCors();
