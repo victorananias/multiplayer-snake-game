@@ -34,7 +34,6 @@ namespace MultiplayerSnakeGame
 
             services.AddSingleton<GamesContext>();
             services.AddScoped<ActionsService>();
-            services.AddScoped<CollisorService>();
             services.AddSingleton<GamesService>();
 
             services.AddCors();

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using MultiplayerSnakeGame.Data;
 using MultiplayerSnakeGame.Interfaces;
 
@@ -13,7 +15,7 @@ namespace MultiplayerSnakeGame.Entities
             Id = id;
             Head = new PlayerHitbox(x, y);
             Body = new List<PlayerHitbox>();
-            _game = game;
+            Game = game;
             LastUpdate = DateTime.Now;
             Direction = string.Empty;
             DefaultUpdateTime = 300;
@@ -42,8 +44,8 @@ namespace MultiplayerSnakeGame.Entities
         public bool Alive { get; set; }
         public bool ShouldGrow { get; set; }
         public bool Win { get; set; }
-
-        private Game _game;
+        [JsonIgnore]
+        public Game Game { get; set; }
 
         public void MoveOrBoost(string direction)
         {
@@ -69,7 +71,7 @@ namespace MultiplayerSnakeGame.Entities
             CurrentUpdateTime = DefaultUpdateTime;
         }
 
-        public ICollidable Next()
+        public ICollidable Updated()
         {
             var updatedPlayer = new Player(Id, Head.X, Head.Y, null)
             {
@@ -184,7 +186,7 @@ namespace MultiplayerSnakeGame.Entities
             if (collidable is Point)
             {
                 Grow();
-                _game.PointTo(this);
+                Game.PointTo(this);
             }
         }
 

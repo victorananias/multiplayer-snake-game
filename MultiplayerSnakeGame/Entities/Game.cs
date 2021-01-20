@@ -18,19 +18,15 @@ namespace MultiplayerSnakeGame.Entities
 
         public Player Winner => Players.FirstOrDefault(s => s.Win);
 
-        private readonly int _playersLimit;
-        private readonly CollisorService _collisorService;
+        public const int PlayersLimit = 5;
 
         public Game(string gameId)
         {
-            _collisorService = new CollisorService();
-
             Id = gameId;
             PointsToWin = 100;
             Players = new List<Player>();
             Points = new List<Point>();
             ScoreList = new List<Score>();
-            _playersLimit = 5;
         }
 
         public void Run()
@@ -56,46 +52,13 @@ namespace MultiplayerSnakeGame.Entities
             SortScore();
         }
 
-        private void CheckPlayersCollisions(List<Player> playersToUpdate)
-        {
-            var collidables = GetCollidables();
-
-            foreach (var player in playersToUpdate)
-            {
-                _collisorService.Check(player, collidables);
-            }
-        }
-
-        private void UpdatePlayers(List<Player> playersToUpdate)
-        {
-            foreach (var player in playersToUpdate)
-            {
-                player.Update();
-            }
-        }
-
-        private void SortScore()
-        {
-            ScoreList = ScoreList.OrderByDescending(s => s.Points).ToList();
-        }
-
-        private List<Player> GetPlayersToUpdate()
-        {
-            return Players.Where(player => player.Alive && player.ShouldUpdate()).ToList();
-        }
-
-        private List<ICollidable> GetCollidables()
-        {
-            return new List<ICollidable>(Players).Concat(Points).ToList();
-        }
-
         public Player TryCreatePlayer(string playerId)
         {
             var random = new Random();
             var x = random.Next(500 - 20) / 20 * 20;
             var y = random.Next(500 - 20) / 20 * 20;
 
-            if (Players.Count == _playersLimit)
+            if (Players.Count == PlayersLimit)
             {
                 return null;
             }
@@ -138,15 +101,48 @@ namespace MultiplayerSnakeGame.Entities
             }
         }
 
+        public bool HasNoPlayersAlive()
+        {
+            return Players.Count > 0 && !Players.Any(s => s.Alive);
+        }
+
         private void WinTo(Player player)
         {
             Over = true;
             player.Win = true;
         }
 
-        public bool HasNoPlayersAlive()
+        private void CheckPlayersCollisions(List<Player> playersToUpdate)
         {
-            return Players.Count > 0 && !Players.Any(s => s.Alive);
+            var collidables = GetCollidables();
+
+            foreach (var player in playersToUpdate)
+            {
+                CollisorService.Check(player, collidables);
+            }
+        }
+
+        private void UpdatePlayers(List<Player> playersToUpdate)
+        {
+            foreach (var player in playersToUpdate)
+            {
+                player.Update();
+            }
+        }
+
+        private void SortScore()
+        {
+            ScoreList = ScoreList.OrderByDescending(s => s.Points).ToList();
+        }
+
+        private List<Player> GetPlayersToUpdate()
+        {
+            return Players.Where(player => player.Alive && player.ShouldUpdate()).ToList();
+        }
+
+        private List<ICollidable> GetCollidables()
+        {
+            return new List<ICollidable>(Players).Concat(Points).ToList();
         }
     }
 }
